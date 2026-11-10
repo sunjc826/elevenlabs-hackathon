@@ -1,0 +1,12 @@
+2026-10-14T08:59:55+08:00 leaf-17 daemon[42]: audit session=20261014
+2026-10-14T08:59:56+08:00 leaf-17 daemon[42]: site=VD-4
+2026-10-14T08:59:57+08:00 leaf-17 daemon[42]: feed=Prism
+2026-10-14T08:59:58+08:00 leaf-17 daemon[42]: group_a=239.10.4.1 vlan=104
+2026-10-14T08:59:59+08:00 leaf-17 daemon[42]: group_b=239.10.4.2 vlan=104
+2026-10-14T09:00:00+08:00 leaf-17 daemon[42]: query_interval_s=30
+2026-10-14T09:03:09+08:00 leaf-17 daemon[42]: audit window=08:59:50..09:03:10
+2026-10-14T09:03:10+08:00 leaf-17 daemon[42]: A/B joins intact; leaves=0 expiry=0
+2026-10-14T09:03:11+08:00 leaf-17 daemon[42]: port_a=prism-a01 port_b=prism-b01
+2026-10-14T09:03:12+08:00 leaf-17 daemon[42]: audit archived=true
+2026-10-14T09:03:13+08:00 leaf-17 daemon[42]: clock source=local
+2026-10-14T09:03:14+08:00 leaf-17 daemon[42]: collector queue_depth=0

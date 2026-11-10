@@ -1,0 +1,221 @@
+{
+  "provider": "ElevenLabs",
+  "model": "eleven_multilingual_v2",
+  "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+  "run": 1,
+  "clips": [
+    {
+      "clip": "audio/title-0.mp3",
+      "characters": 181,
+      "duration_seconds": 10.632,
+      "seconds_per_1000_characters": 58.739,
+      "request_latency_seconds": 1.066,
+      "billed_credits_header": 68,
+      "fingerprint": "73dfce1e7258025ed486913e2a10e9ca8b116677d1d07ebf29e32ea474b8c9d5",
+      "sha256": "1c0e4ff9cbf0efa88490270af34c30c7e33afb3f80a95833a4b849d1a6b75ebc"
+    },
+    {
+      "clip": "audio/timeline-0.mp3",
+      "characters": 184,
+      "duration_seconds": 10.684,
+      "seconds_per_1000_characters": 58.066,
+      "request_latency_seconds": 0.811,
+      "billed_credits_header": 69,
+      "fingerprint": "b33ffaa693dda501b1fafcb403d9a400f512710e0f2199757b7d637b8033a7e6",
+      "sha256": "15436ccfbd1b4f2dcb130bc475e1ee10e526bc7a286e5d33a03f6f30cbec054c"
+    },
+    {
+      "clip": "audio/timeline-1.mp3",
+      "characters": 183,
+      "duration_seconds": 10.266,
+      "seconds_per_1000_characters": 56.099,
+      "request_latency_seconds": 0.816,
+      "billed_credits_header": 69,
+      "fingerprint": "3cdc1605a12a7a28c43883e4a0a7e9a69e64ed5763826869c513abb787bc8db3",
+      "sha256": "3aeb522d499270ce73478fc6eb95766a4e1050078d39e6cb47e54fae44609ebe"
+    },
+    {
+      "clip": "audio/timeline-2.mp3",
+      "characters": 164,
+      "duration_seconds": 9.326,
+      "seconds_per_1000_characters": 56.864,
+      "request_latency_seconds": 0.711,
+      "billed_credits_header": 62,
+      "fingerprint": "bfb7caba4ed29bba957d01b2daf1fa8943a546c2d4417b094949b6167210206e",
+      "sha256": "7724bd222785ac76a22e23aec3fc757d0224e74a3e74f417590b233fe7f69d52"
+    },
+    {
+      "clip": "audio/timeline-3.mp3",
+      "characters": 193,
+      "duration_seconds": 11.233,
+      "seconds_per_1000_characters": 58.2,
+      "request_latency_seconds": 0.825,
+      "billed_credits_header": 72,
+      "fingerprint": "42b07884d5772ee7be51ab1fa3d75023285cfe64fa1a47ae99fab3cba8764354",
+      "sha256": "32bacf9ad6aeae11d41af3a75cae74acadeee5403b89e2f89ffc7ab69dba5277"
+    },
+    {
+      "clip": "audio/timeline-4.mp3",
+      "characters": 162,
+      "duration_seconds": 9.979,
+      "seconds_per_1000_characters": 61.597,
+      "request_latency_seconds": 0.688,
+      "billed_credits_header": 61,
+      "fingerprint": "20aba172a3b7d46d0598e41954ac968f3e4cf4b291b48b83bef65afc4165ac9f",
+      "sha256": "4c6f3017b6356b1b5e699c9b4d0dc15e8774b407b8f5238f4b4d724626fa6557"
+    },
+    {
+      "clip": "audio/hypotheses-0.mp3",
+      "characters": 173,
+      "duration_seconds": 10.109,
+      "seconds_per_1000_characters": 58.436,
+      "request_latency_seconds": 0.726,
+      "billed_credits_header": 65,
+      "fingerprint": "df8b7954d83d4fd3cd1c068520ce4f32e991c27233a0766dc573b2a08bcd3d4b",
+      "sha256": "3f48367d0aa3d074f4579951d196ed3d2c7d79562320074ce271f1492775efac"
+    },
+    {
+      "clip": "audio/hypotheses-1.mp3",
+      "characters": 148,
+      "duration_seconds": 8.49,
+      "seconds_per_1000_characters": 57.363,
+      "request_latency_seconds": 0.603,
+      "billed_credits_header": 55,
+      "fingerprint": "eab28d89035e9edbf22265fc078136ec55201d5b54d8f6b14a4fe1b5ca7bf977",
+      "sha256": "750625f432bdc6f24e478a54b306028ab57635e8e7fb46330b5f5844d10f5d9b"
+    },
+    {
+      "clip": "audio/hypotheses-2.mp3",
+      "characters": 160,
+      "duration_seconds": 9.43,
+      "seconds_per_1000_characters": 58.939,
+      "request_latency_seconds": 0.656,
+      "billed_credits_header": 60,
+      "fingerprint": "712d47573561e99a1ec6bef6ebdc3b05215ed17d509ef25d57b12930abe76756",
+      "sha256": "66f3e274b41f836f4c13bdc1fb10c6d2491ed4ff03cfa1f6d9880c552ed50d2e"
+    },
+    {
+      "clip": "audio/evidence-handler-log-0.mp3",
+      "characters": 205,
+      "duration_seconds": 12.434,
+      "seconds_per_1000_characters": 60.655,
+      "request_latency_seconds": 0.884,
+      "billed_credits_header": 77,
+      "fingerprint": "bb2547a501816a067e27538d51ae00532848dfc731f122a8c1fe50897c569e4f",
+      "sha256": "4d3af349b7ca62d374843b154ab01a4a7d17e9bd7f52d7945a80a9cdd289fa92"
+    },
+    {
+      "clip": "audio/evidence-exchange-0.mp3",
+      "characters": 207,
+      "duration_seconds": 12.147,
+      "seconds_per_1000_characters": 58.681,
+      "request_latency_seconds": 0.916,
+      "billed_credits_header": 78,
+      "fingerprint": "d731cf4adc8ce6c3e3e100de9960871e7f49b174965004f25c7cd73989e1e266",
+      "sha256": "a253e1ef5d461ade2cda53e699d2a0545e251a0cdf9c86d21b0eead864ed1e4f"
+    },
+    {
+      "clip": "audio/evidence-switch-0.mp3",
+      "characters": 194,
+      "duration_seconds": 11.546,
+      "seconds_per_1000_characters": 59.516,
+      "request_latency_seconds": 0.746,
+      "billed_credits_header": 73,
+      "fingerprint": "27a946481505352f9dd2f1a9cab4be58658bc128849515fdb9fad8607bf10728",
+      "sha256": "17b27e8bf6b64aaab2c9f0d76c87dfe9f35775e3368b637a75dc7a0ecca8a211"
+    },
+    {
+      "clip": "audio/evidence-host-0.mp3",
+      "characters": 197,
+      "duration_seconds": 11.546,
+      "seconds_per_1000_characters": 58.61,
+      "request_latency_seconds": 0.752,
+      "billed_credits_header": 74,
+      "fingerprint": "3f2fba626b557a5d0118d5fcde1f63b6b134ee62ffebfd20a54344f9ae8b98b2",
+      "sha256": "d0f1084c15413e068587d6153c3aab701ad018c026bdb601c7a4d8f01386b10d"
+    },
+    {
+      "clip": "audio/verdict-0.mp3",
+      "characters": 164,
+      "duration_seconds": 10.162,
+      "seconds_per_1000_characters": 61.961,
+      "request_latency_seconds": 0.702,
+      "billed_credits_header": 62,
+      "fingerprint": "cd0613b878a89a22e4c5b9f088ac534092ec76c6be24f35df3d5ff461b458a77",
+      "sha256": "da07b041cc1ceed7af299e33c4b6cd0fcb43343e347737ba5200a76bfe00ca73"
+    },
+    {
+      "clip": "audio/verdict-1.mp3",
+      "characters": 186,
+      "duration_seconds": 10.998,
+      "seconds_per_1000_characters": 59.127,
+      "request_latency_seconds": 0.754,
+      "billed_credits_header": 70,
+      "fingerprint": "7c2a1ffe6299299281aa0bb72bae2d95914f7ecbca2020a007893d439435f3a2",
+      "sha256": "ebff19db1ec389b53958d5120a96e5a5a57fd55289d6e57ec32bd7da38e1f9ea"
+    },
+    {
+      "clip": "audio/verdict-2.mp3",
+      "characters": 164,
+      "duration_seconds": 9.848,
+      "seconds_per_1000_characters": 60.05,
+      "request_latency_seconds": 0.686,
+      "billed_credits_header": 62,
+      "fingerprint": "6c4afbb87b6deec68e04dbcb3878dc32c16a93cf16a66edde6a7dd56d7a35a4a",
+      "sha256": "0b8a53e9d1631c7e5611e65780d31b3d9142956a57c77d2abbc86c95f18aa298"
+    },
+    {
+      "clip": "audio/root-cause-0.mp3",
+      "characters": 211,
+      "duration_seconds": 12.356,
+      "seconds_per_1000_characters": 58.559,
+      "request_latency_seconds": 0.77,
+      "billed_credits_header": 79,
+      "fingerprint": "493d7a5475fbc3f682c7dba486a008ab32bceffeabcf5f758b630e0766be44a6",
+      "sha256": "4ad75985fda3ccdb0f4dcf6d64ee36ef622e4fa4834413a55745d214fa524ee8"
+    },
+    {
+      "clip": "audio/root-cause-1.mp3",
+      "characters": 180,
+      "duration_seconds": 11.285,
+      "seconds_per_1000_characters": 62.694,
+      "request_latency_seconds": 0.703,
+      "billed_credits_header": 68,
+      "fingerprint": "d6f1f272ce6629eab4198b2467664c184f49a523528fc0c36b82b485ed837be2",
+      "sha256": "dc3f499ac2f019d867ec8534b8ea500494b8dbbd954798da24a498ca459d9852"
+    },
+    {
+      "clip": "audio/follow-ups-0.mp3",
+      "characters": 185,
+      "duration_seconds": 11.938,
+      "seconds_per_1000_characters": 64.53,
+      "request_latency_seconds": 0.799,
+      "billed_credits_header": 69,
+      "fingerprint": "0f981a65c6b6d5fa02dd4a30c507d37361db38ba14e1e35a8e9b3a3edbfc6210",
+      "sha256": "2b76cc60806c270e5db688654561d02868cd213a7c3d2d99311062f799f2760a"
+    },
+    {
+      "clip": "audio/follow-ups-1.mp3",
+      "characters": 186,
+      "duration_seconds": 11.102,
+      "seconds_per_1000_characters": 59.688,
+      "request_latency_seconds": 0.714,
+      "billed_credits_header": 70,
+      "fingerprint": "a7c244fe815c0517ee1908a775628304c95914f12d41be65bc18df2efd9a9d77",
+      "sha256": "35420220f5bfeb2bc77547e9472aebce43a243c458472dd40d023c185221a21f"
+    },
+    {
+      "clip": "audio/follow-ups-2.mp3",
+      "characters": 172,
+      "duration_seconds": 10.344,
+      "seconds_per_1000_characters": 60.142,
+      "request_latency_seconds": 0.691,
+      "billed_credits_header": 64,
+      "fingerprint": "88e9ff39acd3913aeb7e85650dad1e5c6ba90be3d3f89d48a35fccd4e3402209",
+      "sha256": "24bdbd2de5df56584be5ee57749bc80a0a556a25a8ea802fac5321712575d89a"
+    }
+  ],
+  "observed_usage_delta": 0,
+  "total_duration_seconds": 225.855,
+  "total_characters": 3799
+}

@@ -1,0 +1,12 @@
+Vesper Exchange
+Prism service status
+Report date: 2026-10-14
+Display timezone: VST (UTC+08:00)
+Component: multicast publication
+Channels in scope: A, B
+Reviewed window: 08:59:50 to 09:03:10
+Finding: no incident; A/B publication continuous; publisher sequence gaps=0
+Report generated: 09:12:00
+Maintenance calendar: no scheduled publisher work in reviewed window
+Report scope: publisher egress sequence audit
+Next routine update: 09:30:00

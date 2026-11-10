@@ -1,0 +1,12 @@
+2026-10-14T08:59:55.000+08:00 INFO host=prism-b01 process=handler
+2026-10-14T08:59:55.010+08:00 INFO feed=Prism channel=B
+2026-10-14T08:59:55.020+08:00 INFO site=VD-4 session=20261014
+2026-10-14T08:59:56.000+08:00 INFO heartbeat age_ms=2
+2026-10-14T08:59:57.000+08:00 INFO decoder schema=7
+2026-10-14T08:59:58.000+08:00 INFO journal segment=114
+2026-10-14T08:59:59.000+08:00 INFO downstream=Kestrel attached=true
+2026-10-14T09:00:00.240+08:00 WARN expected=78124001 received=78124641 gap=640
+2026-10-14T09:00:00.250+08:00 INFO journal flush_requested=true
+2026-10-14T09:00:01.000+08:00 INFO heartbeat age_ms=3
+2026-10-14T09:00:02.000+08:00 INFO metrics scrape_complete=true
+2026-10-14T09:00:03.000+08:00 INFO journal segment=115

@@ -1,10 +1,8 @@
-# ElevenLabs hackathon — exploratory workspace
+# ElevenLabs hackathon workspace
 
-**The actual hackathon project has not been chosen. Last Train is only an exploratory demo created by an assistant so the owner could review something from their phone. It is not the owner's selected product, approved direction, or committed hackathon submission.**
+The current owner-directed build is a **narrated incident post-mortem deck** in [`incident-deck/`](incident-deck/README.md). It uses Slidev and per-click ElevenLabs narration, with a static GitHub Pages deployment. The firm, exchange and incident are fictional.
 
-The owner may choose a completely different idea. Preserve Last Train as a reference unless asked otherwise. Future agents should first ask what the owner wants to build; do not infer a roadmap from the existing story, branding, pitch, assets, or deployment. Setup and inspection are fine, but do not extend Last Train, spend audio credits, redesign the project, or deploy a new concept without direction.
-
-Starter prompts: [Codex on this Mac](prompts/codex.txt) · [pi.dev on another machine](prompts/pi-dev.txt).
+**Last Train remains an assistant-created exploratory reference demo.** It is not the chosen product or committed submission, and its existing Cloudflare deployment is separate from the deck. Preserve it unless the owner requests changes.
 
 ## Existing demo: Last Train
 
@@ -51,7 +49,7 @@ When working in the original nested Mac folder, Git still belongs to the Astra r
 
 ## Cloudflare
 
-`wrangler.jsonc` targets the existing `last-train-elevenlabs` Worker, separate from Blockplay SG. This project has no GitHub-triggered deployment workflow.
+`wrangler.jsonc` targets the existing `last-train-elevenlabs` Worker, separate from Blockplay SG. Last Train has no GitHub-triggered Cloudflare deployment. The separate incident deck has its own GitHub Pages workflow.
 
 ```sh
 # Only when deployment is intended and credentials are available:
