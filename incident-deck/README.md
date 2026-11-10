@@ -1,6 +1,6 @@
 # Narrated incident post-mortem
 
-A fictional production incident, presented in 10 slides and 21 narrated click states. The bundled narration runs for 3 minutes 46 seconds. Click **Play narrated review** once, then let each clip advance the deck. **Space** pauses/resumes without changing the slide; **arrow keys** navigate and select the matching narration. Manual navigation preserves the paused state. The final clip stops on the follow-ups slide, with Replay available.
+A fictional production incident, presented in 10 slides and 21 narrated click states. The bundled narration runs for 3 minutes 46 seconds. Click **Play narrated review** once, then let each clip advance the deck. **Space** pauses/resumes without changing the slide; **arrow keys** navigate and select the matching narration. Manual navigation preserves the paused state. The final clip stops on the follow-ups slide, with Replay available. Subtitles are on by default and display the current clip’s narration directly from the manifest. Use **CC** to hide or show them. They remain visible while paused and follow arrow-key navigation.
 
 ## Run
 

@@ -39,6 +39,7 @@ test('all 21 real media-ended events advance exactly once and stop at the end', 
   await begin(page);
   for (const [index, state] of states.entries()) {
     await expect.poll(async () => (await audioState(page)).src).toContain(state.clip);
+    await expect(page.getByRole('region', {name: 'Narration subtitles'})).toHaveText(state.say);
     await expect.poll(async () => (await audioState(page)).duration).toBeGreaterThan(0);
     await expect.poll(async () => (await audioState(page)).time).toBeGreaterThan(0.05);
     // Advance real media to its last 80ms; do not synthesize an ended event.
@@ -62,6 +63,7 @@ test('every click state renders without clipping evidence or slide content', asy
   for (const state of states) {
     if (state !== states[0]) await page.keyboard.press('ArrowRight');
     await expect.poll(async () => (await audioState(page)).src).toContain(state.clip);
+    await expect(page.getByRole('region', {name: 'Narration subtitles'})).toHaveText(state.say);
     await page.waitForTimeout(230);
     const current = page.locator(`[data-slidev-no="${state.page}"]`);
     const excerpt = current.locator('.excerpt');
@@ -83,4 +85,30 @@ test('mobile start and tap controls remain usable', async ({page}) => {
   await page.getByRole('button', {name:'Next step', exact:true}).click();
   await expect.poll(async () => (await audioState(page)).src).toContain('timeline-0.mp3');
   await page.screenshot({path:'.qa/mobile.png'});
+});
+
+test('subtitles toggle, stay readable while paused, and fit mobile screens', async ({page}) => {
+  await page.setViewportSize({width: 390, height: 844});
+  await begin(page);
+  await page.keyboard.press('Space');
+  const subtitles = page.getByRole('region', {name: 'Narration subtitles'});
+  const toggle = page.getByRole('button', {name: 'Subtitles', exact: true});
+  await expect(subtitles).toHaveText(states[0].say);
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await toggle.click();
+  await expect(subtitles).toHaveCount(0);
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await page.keyboard.press('ArrowRight');
+  await expect.poll(async () => (await audioState(page)).src).toContain('timeline-0.mp3');
+  await toggle.click();
+  await expect(subtitles).toHaveText(states[1].say);
+  expect((await audioState(page)).paused).toBe(true);
+  const captionBox = await subtitles.boundingBox();
+  const slideBox = await page.locator('#slide-content').boundingBox();
+  const controlsBox = await page.locator('.narrator-controls').boundingBox();
+  expect(slideBox.y + slideBox.height).toBeLessThanOrEqual(captionBox.y);
+  expect(captionBox.y + captionBox.height).toBeLessThanOrEqual(controlsBox.y);
+  expect(controlsBox.x).toBeGreaterThanOrEqual(0);
+  expect(controlsBox.x + controlsBox.width).toBeLessThanOrEqual(390);
+  await page.screenshot({path:'.qa/subtitles-mobile.png'});
 });

@@ -65,3 +65,10 @@ body { background: #10191f; }
 .audio-message { position: fixed; z-index: 110; bottom: 85px; left: 50%; transform: translateX(-50%); color: #f4d2bc; background: #402b22; padding: 12px 20px; border-radius: 5px; font-size: 14px; }
 @media(max-width: 600px) { .narrator-controls { gap: 5px; bottom: 6px; padding: 6px; }.clip-progress { display: none; }.toggle-audio { min-width: 80px; }.toggle-audio small { display: none; }.playback-end { display: none; }.play-intro h1 { letter-spacing: -1px; } }
 @media print { .play-overlay, .narrator-controls, .audio-message { display: none !important; } }
+
+.narration-subtitles { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 85; width: min(880px, calc(100vw - 32px)); padding: 12px 20px; box-sizing: border-box; border-radius: 6px; background: #0b141af5; color: #f4f7f7; font: 19px/1.45 Inter, Arial, sans-serif; text-align: center; max-height: calc(100dvh - 100px); overflow-y: auto; }
+body:has(.narration-subtitles) #slide-container { height: max(100px, calc(100dvh - 190px)); }
+.narrator-controls .subtitle-toggle { font-weight: 700; border: 1px solid #8ce0c4; }
+.narrator-controls .subtitle-toggle[aria-pressed="false"] { background: transparent; border-color: #52636b; color: #a9bec6; }
+@media(max-width: 600px) { .narration-subtitles { bottom: 66px; padding: 10px 12px; font-size: 16px; } body:has(.narration-subtitles) #slide-container { height: max(100px, calc(100dvh - 245px)); } }
+@media print { .narration-subtitles { display: none !important; } }

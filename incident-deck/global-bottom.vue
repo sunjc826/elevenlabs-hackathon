@@ -10,6 +10,7 @@ const audio = ref<HTMLAudioElement>()
 const started = ref(false)
 const paused = ref(true)
 const finished = ref(false)
+const subtitlesEnabled = ref(true)
 const message = ref('')
 const elapsed = ref(0)
 const duration = ref(0)
@@ -107,10 +108,15 @@ const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.fl
         <p class="play-help">Space to pause · Arrow keys to explore · About 4 minutes</p>
       </div>
     </div>
-    <div v-if="started" class="narrator-controls" @click.stop>
+    <div v-if="started && subtitlesEnabled && currentStep" class="narration-subtitles"
+      role="region" aria-label="Narration subtitles">{{ currentStep.say }}</div>
+    <div v-if="started" class="narrator-controls" @click.stop
+      @keydown.right.prevent.stop="nav.next()" @keydown.left.prevent.stop="nav.prev()">
       <button aria-label="Previous step" @click="nav.prev()">←</button>
       <button class="toggle-audio" @click="toggle">{{ finished ? 'Replay' : paused ? 'Resume' : 'Pause' }}<small>Space</small></button>
       <button aria-label="Next step" @click="nav.next()">→</button>
+      <button class="subtitle-toggle" aria-label="Subtitles" :aria-pressed="subtitlesEnabled"
+        title="Toggle subtitles" @click="subtitlesEnabled = !subtitlesEnabled">CC</button>
       <div class="playback-position"><strong>{{ nav.currentPage.value }} / {{ manifest.slides.length }}</strong><span>Step {{ stepIndex + 1 }} / {{ currentSlide?.steps.length || 1 }}</span></div>
       <div class="clip-progress"><progress :value="elapsed" :max="duration || 1" /><span>{{ clock(elapsed) }} / {{ clock(duration) }}</span></div>
       <span v-if="finished" class="playback-end">Review complete</span>
