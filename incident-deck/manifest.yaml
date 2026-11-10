@@ -9,119 +9,571 @@ deck:
     speed: 1.0
   date: '2026-10-14'
   timezone: VST (UTC+08:00)
+  audio_revision: visual-v2
+  runtime_cap_seconds: 240
+  path_nodes:
+  - Vesper Exchange
+  - leaf-17
+  - prism-b01 NIC ring
+  - handler
+  - Kestrel
 slides:
-  - id: title
-    layout: cover
-    title: Opening-burst packet loss
-    steps:
-      - show: "<div class='cover-subtitle'>Larkspur Trading</div><div class='cover-metric'>3 minutes<span>from gap to recovery</span></div><p class='cover-note'>Fictional incident review · 14 October 2026</p>"
-        say: "This review follows a three-minute interruption at Larkspur Trading. We'll trace missing feed messages to a host setting, then explain how the next routine upgrade should be tested."
-        clip: audio/title-0.mp3
-  - id: timeline
-    layout: timeline
-    title: Eighteen quiet minutes, then a burst
-    steps:
-      - show: "<time>08:42:00</time><div><strong>Driver upgrade complete</strong><span>prism-b01 passes quiet-feed checks</span></div>"
-        say: "At eight forty-two Vesper Standard Time, the B-channel host passed maintenance checks. Packets could arrive, but the checks did not test how much traffic the host could absorb at once."
-        clip: audio/timeline-0.mp3
-      - show: "<time>09:00:00</time><div><strong>Market opens</strong><span>Prism multicast traffic surges</span></div>"
-        say: "Eighteen minutes later, the open changed the workload abruptly. The opening burst demanded much more buffering than the quiet feed had needed, before packet processing could catch up."
-        clip: audio/timeline-1.mp3
-      - show: "<time>09:00:00.240</time><div><strong>B-channel sequence gap</strong><span>640 messages missing on prism-b01</span></div>"
-        say: "Within a quarter of a second, the handler detected missing sequence numbers. That locates the symptom at the open, but cannot tell us where the packets disappeared."
-        clip: audio/timeline-2.mp3
-      - show: "<time>09:00:00.480</time><div><strong>Risk halt</strong><span>Kestrel instances stop on stale data</span></div>"
-        say: "Another quarter-second later, the freshness guard halted the strategy instances. This protective response stopped decisions on an incomplete market view while the feed problem was investigated."
-        clip: audio/timeline-3.mp3
-      - show: "<time>09:03:00</time><div><strong>Trading resumes</strong><span>Mira validates prism-a01 and releases the halt</span></div>"
-        say: "About three minutes after the gap, Mira completed the move to the unchanged A channel. Fresh data restored trading, leaving the B-channel failure to be explained."
-        clip: audio/timeline-4.mp3
-  - id: hypotheses
-    layout: hypotheses
-    title: Three possible places to lose packets
-    steps:
-      - show: "<span class='standing pending'>COULD NOT BE EXCLUDED</span><h2>Exchange publication</h2><p>Did Vesper Exchange omit messages from Prism?</p>"
-        say: "Initially, an exchange publication gap could not be excluded. Healthy receivers can report messages that were never sent, so we needed an independent account of publication."
-        clip: audio/hypotheses-0.mp3
-      - show: "<span class='standing pending'>COULD NOT BE EXCLUDED</span><h2>Multicast membership</h2><p>Did leaf-17 stop forwarding the subscribed group?</p>"
-        say: "A lost multicast membership could not be excluded either. That would interrupt delivery to the handler even if the exchange published every message."
-        clip: audio/hypotheses-1.mp3
-      - show: "<span class='standing pending'>COULD NOT BE EXCLUDED</span><h2>Host receive path</h2><p>Did prism-b01 run out of receive capacity?</p>"
-        say: "Host packet loss also could not be excluded. The recent driver change made it worth investigating, but timing alone was insufficient to confirm it as the cause."
-        clip: audio/hypotheses-2.mp3
-  - id: evidence-handler-log
-    layout: evidence
-    title: The symptom reaches the handler
-    source: Feed handler log, host prism-b01
-    excerpt: excerpts/handler.log
-    highlight_line: 8
-    steps:
-      - show: "<strong>640 missing messages</strong><span>Symptom confirmed. Loss location still unknown.</span>"
-        say: "The highlighted line compares the next expected sequence with the next arrival. Their difference establishes missing messages. It confirms the symptom, while leaving all three possible loss locations open."
-        clip: audio/evidence-handler-log-0.mp3
-  - id: evidence-exchange
-    layout: evidence
-    title: Publication stayed continuous
-    source: Vesper Exchange status page, Prism incident-window report
-    excerpt: excerpts/exchange-status.txt
-    highlight_line: 8
-    steps:
-      - show: "<strong>Exchange gap ruled out</strong><span>The report covers the incident window and both channels.</span>"
-        say: "The highlighted report explicitly checks publication continuity across the incident window. This is stronger than a green status badge. Within this fictional record, it rules out the exchange-gap hypothesis."
-        clip: audio/evidence-exchange-0.mp3
-  - id: evidence-switch
-    layout: evidence
-    title: Membership never expired
-    source: Access-switch log, leaf-17
-    excerpt: excerpts/switch.log
-    highlight_line: 8
-    steps:
-      - show: "<strong>Membership loss ruled out</strong><span>Both feed subscriptions remained present throughout the window.</span>"
-        say: "The highlighted audit covers both handler ports throughout the failure window. No membership expired or left. That rules out membership loss, while leaving other switch faults outside this test."
-        clip: audio/evidence-switch-0.mp3
-  - id: evidence-host
-    layout: evidence
-    title: Receive misses rise at the open
-    source: Host NIC counter snapshot and replay audit, prism-b01
-    excerpt: excerpts/nic-counters.txt
-    highlight_line: 8
-    steps:
-      - show: "<strong>Host packet loss confirmed</strong><span>512 descriptors after upgrade; replay succeeds at 4096.</span>"
-        say: "The highlighted row's right-hand counter shows receive misses rising at the open. Replay reproduces loss with the smaller ring and clears it at the original capacity, confirming the host mechanism."
-        clip: audio/evidence-host-0.mp3
-  - id: verdict
-    layout: hypotheses
-    title: The evidence narrows the cause
-    steps:
-      - show: "<span class='standing excluded'>RULED OUT</span><h2>Exchange publication gap</h2><p>Incident-window publication report is continuous.</p>"
-        say: "The exchange-gap hypothesis is ruled out. The publication report covers the relevant interval, so missing messages at the receiver do not imply missing publication."
-        clip: audio/verdict-0.mp3
-      - show: "<span class='standing excluded'>RULED OUT</span><h2>Multicast membership loss</h2><p>Switch audit shows uninterrupted subscriptions.</p>"
-        say: "The membership-loss hypothesis is ruled out. The switch retained the subscriptions. The conclusion stays narrow because this evidence addresses membership, rather than the whole network."
-        clip: audio/verdict-1.mp3
-      - show: "<span class='standing confirmed'>CONFIRMED</span><h2>Host receive-ring exhaustion</h2><p>Miss counters and controlled replay identify prism-b01.</p>"
-        say: "Host receive loss is confirmed. The counter timing locates the failure, and changing only ring capacity in replay explains why the new default failed under a burst."
-        clip: audio/verdict-2.mp3
-  - id: root-cause
-    layout: mechanism
-    title: A default became a production limit
-    steps:
-      - show: "<div class='ring-comparison'><div><span>Previous receive ring</span><strong>4096</strong></div><div><span>New driver default</span><strong class='danger'>512</strong></div></div><p>Descriptors available before packet processing catches up</p>"
-        say: "The driver reduced the receive ring to one eighth of its previous capacity. Because configuration inherited that default, a routine software change silently reduced the host's tolerance for short traffic bursts."
-        clip: audio/root-cause-0.mp3
-      - show: "<div class='mechanism-finding'><strong>Opening burst exceeds buffer capacity</strong><p>Receive misses cause a sequence gap, stale strategy data and a protective halt.</p></div>"
-        say: "The open supplied the trigger. The unpinned ring size supplied the vulnerability. A quiet health check could pass both configurations, which is why the missing burst test mattered."
-        clip: audio/root-cause-1.mp3
-  - id: follow-ups
-    layout: actions
-    title: Make burst capacity explicit
-    steps:
-      - show: "<span class='action-number'>01</span><div><h2>Pin 4096 descriptors</h2><p>Verify both hosts after reload and reboot.</p></div>"
-        say: "First, pin the ring size in configuration and verify it after reload and reboot. That makes the required capacity an explicit operating choice instead of an undocumented driver default."
-        clip: audio/follow-ups-0.mp3
-      - show: "<span class='action-number'>02</span><div><h2>Alert on receive misses</h2><p>Trigger on a positive counter delta.</p></div>"
-        say: "Second, alert when receive misses increase. This gives Mira a direct signal from the failing layer, shortening the investigation instead of relying only on a downstream stale-data alarm."
-        clip: audio/follow-ups-1.mp3
-      - show: "<span class='action-number'>03</span><div><h2>Replay the pre-open burst</h2><p>Require zero misses and zero gaps after every driver change.</p></div>"
-        say: "Finally, make a representative burst replay part of every driver change. Together, these checks preserve the capacity we depend on and prove it before the next market open."
-        clip: audio/follow-ups-2.mp3
+- id: title
+  layout: cover
+  title: Opening-burst packet loss
+  steps:
+  - show: Three minutes to recover
+    caption: Three minutes to recover
+    say: This fictional Larkspur Trading review follows three minutes of interrupted trading. We will track feed
+      traffic, receive misses, and strategy state, then locate the loss along the packet path.
+    target_seconds: 11
+    visible_change: Cover appears with three-minute recovery figure
+    anchors:
+    - fictional
+    - Larkspur Trading
+    - three minutes
+    - feed traffic
+    - receive misses
+    - strategy state
+    - packet path
+    clip: audio/v2-title-0.mp3
+  visual: cover
+- id: timeline
+  layout: timeline
+  title: The opening burst
+  steps:
+  - show: 08:42:00 · quiet checks
+    caption: 08:42:00 · quiet checks
+    say: At eight forty-two, the driver upgrade passed quiet checks; the strategy kept running.
+    target_seconds: 5.4
+    visible_change: New timestamped vertical marker and event label appear
+    anchors:
+    - driver upgrade
+    - quiet checks
+    - strategy
+    time: 08:42:00
+    at: 120
+    event: Driver upgraded
+    clip: audio/v2-timeline-0.mp3
+  - show: 09:00:00 · traffic spike
+    caption: 09:00:00 · traffic spike
+    say: Eighteen minutes later, the market opens. The top trace spikes with incoming feed traffic.
+    target_seconds: 5.4
+    visible_change: New timestamped vertical marker and event label appear
+    anchors:
+    - market opens
+    - top trace
+    - feed traffic
+    time: 09:00:00
+    at: 1200
+    event: Market opens
+    clip: audio/v2-timeline-1.mp3
+  - show: Step at 09:00:00.240
+    caption: Step at 09:00:00.240
+    say: A quarter-second later, the middle trace steps to six hundred forty receive misses.
+    target_seconds: 5.4
+    visible_change: New timestamped vertical marker and event label appear
+    anchors:
+    - middle trace
+    - six hundred forty
+    - receive misses
+    time: '09:00:00.240'
+    at: 1200.24
+    event: 640 receive misses
+    clip: audio/v2-timeline-2.mp3
+  - show: 09:00:00.480 · risk halt
+    caption: 09:00:00.480 · risk halt
+    say: 'Another quarter-second later, the bottom band turns red: stale data triggers the risk halt.'
+    target_seconds: 5.4
+    visible_change: New timestamped vertical marker and event label appear
+    anchors:
+    - bottom band
+    - stale data
+    - risk halt
+    time: '09:00:00.480'
+    at: 1200.48
+    event: Risk halt
+    clip: audio/v2-timeline-3.mp3
+  - show: 09:03:00 · running again
+    caption: 09:03:00 · running again
+    say: Three minutes later, Mira switches to the A channel. The bottom band returns to running.
+    target_seconds: 5.4
+    visible_change: New timestamped vertical marker and event label appear
+    anchors:
+    - Mira
+    - A channel
+    - bottom band
+    - running
+    time: 09:03:00
+    at: 1380
+    event: A-channel recovery
+    clip: audio/v2-timeline-4.mp3
+  visual: metrics
+  metrics:
+    start: 08:40
+    end: 09:05
+    range_seconds: 1500
+    rate_label: Prism message rate · relative
+    rate:
+    - - 0
+      - 0.16
+    - - 1199.99
+      - 0.16
+    - - 1200
+      - 1
+    - - 1200.24
+      - 0.9
+    - - 1205
+      - 0.25
+    - - 1215
+      - 0.16
+    - - 1500
+      - 0.16
+    misses:
+    - - 0
+      - 0
+    - - 1200.239
+      - 0
+    - - 1200.24
+      - 640
+    - - 1500
+      - 640
+    halt_seconds:
+    - 1200.48
+    - 1380
+    feed_label: Prism feed
+    counter_label: rx_missed_errors
+    strategy_label: Kestrel
+    axis_labels:
+    - 08:40
+    - 08:45
+    - 08:50
+    - 08:55
+    - 09:00
+    - 09:05
+- id: hypotheses
+  layout: hypotheses
+  title: Where could packets disappear?
+  steps:
+  - show: Exchange publication · still possible
+    caption: Exchange publication · still possible
+    say: 'Follow the path: Vesper Exchange, leaf-seventeen, the prism B host ring, the handler, then Kestrel. The
+      highlighted exchange could have omitted messages; that possibility could not be excluded.'
+    target_seconds: 11
+    visible_change: Exchange node lights up
+    anchors:
+    - Vesper Exchange
+    - leaf-seventeen
+    - prism B host ring
+    - handler
+    - Kestrel
+    - could not be excluded
+    focus: 0
+    path_states:
+    - pending
+    - neutral
+    - neutral
+    clip: audio/v2-hypotheses-0.mp3
+  - show: leaf-17 membership · still possible
+    caption: leaf-17 membership · still possible
+    say: The highlighted leaf-seventeen could have lost multicast membership. That possibility also could not be
+      excluded.
+    target_seconds: 6
+    visible_change: Switch node lights up
+    anchors:
+    - leaf-seventeen
+    - multicast membership
+    - could not be excluded
+    focus: 1
+    path_states:
+    - pending
+    - pending
+    - neutral
+    clip: audio/v2-hypotheses-1.mp3
+  - show: Host ring · still possible
+    caption: Host ring · still possible
+    say: The host ring now lights up. Packet loss here could not be excluded after the driver change.
+    target_seconds: 6
+    visible_change: NIC ring node lights up
+    anchors:
+    - host ring
+    - could not be excluded
+    - driver change
+    focus: 2
+    path_states:
+    - pending
+    - pending
+    - pending
+    clip: audio/v2-hypotheses-2.mp3
+  visual: path
+- id: evidence-handler-log
+  layout: evidence
+  title: Handler sequence log
+  source: Feed handler log, host prism-b01
+  excerpt: excerpts/handler.log
+  highlight_line: 8
+  steps:
+  - show: Handler log · locate the symptom
+    caption: Handler log · locate the symptom
+    say: Look at the B-channel handler log. We need to establish the symptom before locating the loss.
+    target_seconds: 5
+    visible_change: Source appears without a highlighted finding
+    anchors:
+    - B-channel handler log
+    - establish the symptom
+    - locating the loss
+    phase: orient
+    clip: audio/v2-evidence-handler-log-0.mp3
+  - show: Finding line · 640 missing messages
+    caption: Finding line · 640 missing messages
+    say: The highlighted line compares the expected sequence with the next arrival. The difference is six hundred
+      forty missing messages. That confirms a discontinuity at the receiver, but it does not identify where packets
+      disappeared. The other log lines simply establish the surrounding capture context.
+    target_seconds: 18
+    visible_change: Finding line highlights
+    anchors:
+    - highlighted line
+    - expected sequence
+    - next arrival
+    - six hundred forty
+    - does not identify where
+    - capture context
+    phase: interpret
+    clip: audio/v2-evidence-handler-log-1.mp3
+  - show: Handler confirmed · cause still open
+    caption: Handler confirmed · cause still open
+    say: The miniature confirms the handler symptom. Exchange, switch membership, and host loss still could not
+      be excluded.
+    target_seconds: 6
+    visible_change: Path miniature appears with updated standing
+    anchors:
+    - miniature
+    - handler symptom
+    - Exchange
+    - switch membership
+    - host loss
+    - could not be excluded
+    phase: standing
+    focus: 3
+    path_states:
+    - pending
+    - pending
+    - pending
+    clip: audio/v2-evidence-handler-log-2.mp3
+  visual: evidence
+- id: evidence-exchange
+  layout: evidence
+  title: Exchange publication audit
+  source: Vesper Exchange status page, Prism incident-window report
+  excerpt: excerpts/exchange-status.txt
+  highlight_line: 8
+  steps:
+  - show: Exchange report · check publication
+    caption: Exchange report · check publication
+    say: Look at the exchange status report. We need publication evidence covering the incident window.
+    target_seconds: 5
+    visible_change: Source appears without a highlighted finding
+    anchors:
+    - exchange status report
+    - publication evidence
+    - incident window
+    phase: orient
+    clip: audio/v2-evidence-exchange-0.mp3
+  - show: Finding line · publication stayed continuous
+    caption: Finding line · publication stayed continuous
+    say: The highlighted finding reports continuous publication on both channels across the reviewed window. This
+      is an explicit sequence audit, not just a green service badge. Within this fictional record, it rules out
+      an exchange publication gap. The surrounding report identifies the window and audit scope.
+    target_seconds: 18
+    visible_change: Finding line highlights
+    anchors:
+    - highlighted finding
+    - continuous publication
+    - both channels
+    - reviewed window
+    - rules out
+    - audit scope
+    phase: interpret
+    clip: audio/v2-evidence-exchange-1.mp3
+  - show: Exchange gap · ruled out
+    caption: Exchange gap · ruled out
+    say: The miniature crosses out the exchange. Its publication-gap hypothesis is ruled out; downstream candidates
+      remain open.
+    target_seconds: 6
+    visible_change: Path miniature appears with updated standing
+    anchors:
+    - miniature
+    - crosses out the exchange
+    - ruled out
+    - downstream candidates remain open
+    phase: standing
+    focus: 0
+    path_states:
+    - excluded
+    - pending
+    - pending
+    clip: audio/v2-evidence-exchange-2.mp3
+  visual: evidence
+- id: evidence-switch
+  layout: evidence
+  title: Switch membership audit
+  source: Access-switch log, leaf-17
+  excerpt: excerpts/switch.log
+  highlight_line: 8
+  steps:
+  - show: leaf-17 log · check memberships
+    caption: leaf-17 log · check memberships
+    say: Look at leaf-seventeen’s membership audit. We need to know whether the subscriptions survived the open.
+    target_seconds: 5
+    visible_change: Source appears without a highlighted finding
+    anchors:
+    - leaf-seventeen
+    - membership audit
+    - subscriptions
+    - open
+    phase: orient
+    clip: audio/v2-evidence-switch-0.mp3
+  - show: Finding line · joins stayed intact
+    caption: Finding line · joins stayed intact
+    say: The highlighted audit shows both memberships stayed present across the failure window. There were no departures
+      or expirations to interrupt multicast delivery. That rules out the membership-loss hypothesis specifically.
+      It does not clear every possible switch fault; the surrounding lines define the ports and audit window.
+    target_seconds: 18
+    visible_change: Finding line highlights
+    anchors:
+    - highlighted audit
+    - both memberships
+    - departures or expirations
+    - rules out
+    - not clear every possible switch fault
+    - ports and audit window
+    phase: interpret
+    clip: audio/v2-evidence-switch-1.mp3
+  - show: Membership loss · ruled out
+    caption: Membership loss · ruled out
+    say: The miniature crosses out membership loss at leaf-seventeen. Host receive loss remains the unresolved candidate.
+    target_seconds: 6
+    visible_change: Path miniature appears with updated standing
+    anchors:
+    - miniature
+    - crosses out membership loss
+    - leaf-seventeen
+    - Host receive loss
+    - unresolved
+    phase: standing
+    focus: 1
+    path_states:
+    - excluded
+    - excluded
+    - pending
+    clip: audio/v2-evidence-switch-2.mp3
+  visual: evidence
+- id: evidence-host
+  layout: evidence
+  title: Host receive-miss replay
+  source: Host NIC counter snapshot and replay audit, prism-b01
+  excerpt: excerpts/nic-counters.txt
+  highlight_line: 8
+  steps:
+  - show: Host replay · compare ring capacity
+    caption: Host replay · compare ring capacity
+    say: Compare the two receive-miss traces under the same replay burst. Only ring capacity changes.
+    target_seconds: 5
+    visible_change: Two unhighlighted replay traces appear, labeled by ring capacity
+    anchors:
+    - two receive-miss traces
+    - same replay burst
+    - Only ring capacity changes
+    phase: orient
+    clip: audio/v2-evidence-host-0.mp3
+  - show: 512 climbs · 4096 stays zero
+    caption: 512 climbs · 4096 stays zero
+    say: The orange trace climbs to six hundred forty misses with five hundred twelve slots. The green trace stays
+      at zero with four thousand ninety-six. The step aligns with the open; replay isolates ring capacity as the
+      cause. The collapsed raw counters preserve the underlying snapshot.
+    target_seconds: 18
+    visible_change: Replay series become orange and green; finding point lights up
+    anchors:
+    - orange trace
+    - six hundred forty
+    - five hundred twelve
+    - green trace
+    - zero
+    - four thousand ninety-six
+    - step
+    - ring capacity
+    - collapsed raw counters
+    phase: interpret
+    clip: audio/v2-evidence-host-1.mp3
+  - show: Host receive loss · confirmed
+    caption: Host receive loss · confirmed
+    say: The miniature marks the host ring confirmed. The receive misses and controlled replay locate the loss here.
+    target_seconds: 6
+    visible_change: Path miniature appears with updated standing
+    anchors:
+    - miniature
+    - host ring confirmed
+    - receive misses
+    - controlled replay
+    phase: standing
+    focus: 2
+    path_states:
+    - excluded
+    - excluded
+    - confirmed
+    clip: audio/v2-evidence-host-2.mp3
+  visual: host
+  chart:
+    x_labels:
+    - '08:59:59.900'
+    - '09:00:00.000'
+    - '09:00:00.240'
+    - '09:00:00.500'
+    range_ms: 600
+    finding_ms: 340
+    series:
+    - name: ring 512
+      color: '#f6a66b'
+      points:
+      - - 0
+        - 0
+      - - 339
+        - 0
+      - - 340
+        - 640
+      - - 600
+        - 640
+    - name: ring 4096
+      color: '#8ce0c4'
+      points:
+      - - 0
+        - 0
+      - - 600
+        - 0
+    counter_label: rx_missed_errors
+    x_ticks:
+    - 0
+    - 100
+    - 340
+    - 600
+- id: verdict
+  layout: hypotheses
+  title: The evidence narrows the cause
+  steps:
+  - show: Exchange publication · ruled out
+    caption: Exchange publication · ruled out
+    say: 'Cross out the exchange publication gap: the incident-window report shows continuous publication.'
+    target_seconds: 5.5
+    visible_change: Exchange mark changes to crossed
+    anchors:
+    - Cross out the exchange
+    - continuous publication
+    focus: 0
+    path_states:
+    - excluded
+    - pending
+    - pending
+    clip: audio/v2-verdict-0.mp3
+  - show: leaf-17 membership · ruled out
+    caption: leaf-17 membership · ruled out
+    say: 'Cross out membership loss at leaf-seventeen: the switch retained both subscriptions.'
+    target_seconds: 5.5
+    visible_change: Switch mark changes to crossed
+    anchors:
+    - Cross out membership loss
+    - leaf-seventeen
+    - both subscriptions
+    focus: 1
+    path_states:
+    - excluded
+    - excluded
+    - pending
+    clip: audio/v2-verdict-1.mp3
+  - show: Host ring · confirmed
+    caption: Host ring · confirmed
+    say: 'Confirm the host ring: receive misses and the controlled replay identify exhausted capacity.'
+    target_seconds: 5.5
+    visible_change: Host ring mark changes to confirmed
+    anchors:
+    - Confirm the host ring
+    - receive misses
+    - controlled replay
+    - exhausted capacity
+    focus: 2
+    path_states:
+    - excluded
+    - excluded
+    - confirmed
+    clip: audio/v2-verdict-2.mp3
+  visual: path
+- id: root-cause
+  layout: mechanism
+  title: The same burst, two receive rings
+  steps:
+  - show: Same burst · smaller ring overflows
+    caption: Same burst · smaller ring overflows
+    say: Both buffers receive the same burst. On the left, four thousand ninety-six slots absorb it, then drain
+      as processing catches up. On the right, five hundred twelve slots fill first; overflow counts up to six hundred
+      forty dropped packets. The new driver silently chose that smaller default. A quiet check never exercised this
+      limit.
+    target_seconds: 20
+    visible_change: Both buffers appear empty and begin filling immediately
+    anchors:
+    - Both buffers
+    - same burst
+    - left
+    - four thousand ninety-six
+    - drain
+    - right
+    - five hundred twelve
+    - overflow
+    - six hundred forty
+    - new driver
+    - quiet check
+    phase: burst
+    clip: audio/v2-root-cause-0.mp3
+  visual: ring
+  buffers:
+    capacities:
+    - 4096
+    - 512
+    drops: 640
+    peak_arrivals: 1152
+    note: Schematic occupancy · same burst and processing delay
+- id: follow-ups
+  layout: actions
+  title: Make burst capacity explicit
+  steps:
+  - show: Configure 4096 descriptors
+    caption: Pin 4096 · verify after reboot
+    say: Pin four thousand ninety-six descriptors in configuration, then verify both hosts after reload and reboot.
+    target_seconds: 6
+    visible_change: Only the pin-and-verify action appears
+    anchors:
+    - four thousand ninety-six
+    - configuration
+    - both hosts
+    - reload and reboot
+    clip: audio/v2-follow-ups-0.mp3
+  - show: Alert on receive misses
+    caption: Alert on receive-miss increases
+    say: Alert on any increase in receive misses, giving Mira a direct signal from the failing layer.
+    target_seconds: 6
+    visible_change: Action changes to counter alert
+    anchors:
+    - Alert
+    - increase in receive misses
+    - Mira
+    clip: audio/v2-follow-ups-1.mp3
+  - show: Test each driver change
+    caption: Burst test · zero misses or gaps
+    say: After every driver change, replay a pre-open burst. Require zero misses and zero handler gaps before promotion.
+    target_seconds: 7
+    visible_change: Action changes to pre-open burst test
+    anchors:
+    - every driver change
+    - pre-open burst
+    - zero misses
+    - zero handler gaps
+    clip: audio/v2-follow-ups-2.mp3
+  visual: actions

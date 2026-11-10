@@ -1,6 +1,22 @@
 # Results
 
-Measured on 2026-11-10 with ElevenLabs `eleven_multilingual_v2`, voice `JBFqnCBsd6RMkjVDRZzb`, stability 0.55, similarity boost 0.75 and speed 1.0. Both runs use the same unmodified manifest: 21 clips, 3,799 characters. Run 1 is the published audio. Run 2 is an independently synthesized comparison pack, retained in the ignored local cache. No seed was set.
+## Visual revision (2026-11-10)
+
+The current deck has 28 clips totaling **232.594 seconds (3:53)**. The earlier two-run comparison below remains the baseline for the original narration, not a comparison against this rewritten script. Current clip measurements are in `metrics/visual-v2-run-1.json`.
+
+| Dimension | Observation |
+|---|---|
+| Jargon: host names, feed names, acronyms | Revised narration points to the packet-path nodes, receive-miss chart and ring buffers. Subjective pronunciation listening remains unscored. |
+| Numbers: timestamps, sequence numbers, durations | Absolute marker timestamps remain visible; narration uses meaningful elapsed intervals. Sequence lines are interpreted rather than read. Timeline clips measure 5.38–5.41 s; evidence interpretations 18.00–18.02 s; buffer animation 20.04 s. |
+| Tone: confirmed vs hedged | Candidate narration explicitly says “could not be excluded”; evidence and verdict distinguish “ruled out” and “confirmed”. Audibility of that distinction remains a listening check. |
+| Length stability: seconds per 1000 characters, two runs | Current run: 58.499 final seconds / 1000 characters, 3976 characters. Only one synthesis run for this revision; no second-run stability claim. Tempo adjustment is recorded separately from raw TTS duration. |
+| Latency and cost per clip | Response latency 0.443–1.224 s. Billed-credit response headers total 1489 credits across 28 clips. No USD price inferred. Pitch-preserving tempo factors 0.885–1.315. |
+
+Four content/audio checks, strict TypeScript checking, the static build, and eight headless Chromium integration tests pass for this revision. `audit.md` lists each step’s visible change, key phrase and narrated anchors. Content checks enforce the runtime cap, pacing ranges, captions and three-stage evidence structure. Browser checks exercise all media-ended transitions, first-state rendering, evidence highlights, diagram standing, CSS duration and seek/pause synchronization, counter progression/reset, whole-deck progress and mobile caption controls. The timeline rate shape and buffer occupancy are schematic; the replay endpoints reproduce the fictional raw-counter record.
+
+## Original narration baseline
+
+Measured on 2026-11-10 with ElevenLabs `eleven_multilingual_v2`, voice `JBFqnCBsd6RMkjVDRZzb`, stability 0.55, similarity boost 0.75 and speed 1.0. Both baseline runs used the original manifest: 21 clips, 3,799 characters. Baseline run 1 was the original published audio. Run 2 is an independently synthesized comparison pack, retained in the ignored local cache. No seed was set.
 
 | Dimension | Observation |
 |---|---|
@@ -40,7 +56,7 @@ Characters count the exact `say` string sent to the provider. Duration comes fro
 | follow-ups-1 | 186 | 11.102 | 11.050 | 0.714 | 0.826 | 70 | 70 |
 | follow-ups-2 | 172 | 10.344 | 10.684 | 0.691 | 0.796 | 64 | 64 |
 
-## Verification and deployment
+## Baseline verification and deployment
 
 - 3 content/audio-integrity tests, strict Vue/TypeScript checking and the static build pass.
 - 4 headless Chromium integration tests pass: gesture gate, precise Space pause/resume, arrow navigation and resynchronization, every real media-ended transition, final stop/replay, all 21 click-state screenshots and bounds, and mobile tap controls.
@@ -51,7 +67,7 @@ Characters count the exact `say` string sent to the provider. Duration comes fro
 
 For another provider, preserve `manifest.yaml`, send the same `say` strings, keep the same per-step file mapping, and record a new metrics file with provider/model/settings, duration, latency and billed units. Do not substitute a cached replay for a second synthesis run.
 
-## Optional export
+## Baseline optional export
 
 `slidev export --format png --with-clicks` produced all 21 click-state PNGs. The exported views hide the interactive player overlay. `export_video.py` combined them with the published narration into `exports/incident-review.mp4` and packaged the PNGs in `exports/click-states.zip`.
 

@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useNav, useSlideContext } from '@slidev/client'
 import manifest from './generated/manifest.json'
+import { playback, publishClock } from './playback'
 
 const exporting = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('print')
 const nav = useNav()
@@ -10,7 +11,7 @@ const audio = ref<HTMLAudioElement>()
 const started = ref(false)
 const paused = ref(true)
 const finished = ref(false)
-const subtitlesEnabled = ref(true)
+const subtitlesEnabled = ref(false)
 const message = ref('')
 const elapsed = ref(0)
 const duration = ref(0)
@@ -18,7 +19,20 @@ const currentSlide = computed(() => manifest.slides[nav.currentPage.value - 1])
 const stepIndex = computed(() => Math.max(0, Math.min(nav.clicks.value, (currentSlide.value?.steps.length ?? 1) - 1)))
 const currentStep = computed(() => currentSlide.value?.steps[stepIndex.value])
 const src = computed(() => currentStep.value ? `${import.meta.env.BASE_URL}${currentStep.value.clip}` : '')
+const allSteps = manifest.slides.flatMap(slide => slide.steps)
+const currentOrdinal = computed(() => manifest.slides.slice(0, nav.currentPage.value - 1).reduce((n,s) => n+s.steps.length,0) + stepIndex.value)
+const totalDuration = computed(() => allSteps.reduce((n,s) => n+s.duration_seconds,0))
+const deckElapsed = computed(() => Math.min(totalDuration.value, allSteps.slice(0,currentOrdinal.value).reduce((n,s) => n+s.duration_seconds,0) + elapsed.value))
 let revision = 0
+let frame = 0
+function updateClock() {
+  elapsed.value = audio.value?.currentTime || 0
+  duration.value = Number.isFinite(audio.value?.duration) ? audio.value!.duration : currentStep.value?.duration_seconds || 0
+  playback.started = started.value
+  playback.paused = paused.value
+  publishClock(elapsed.value, duration.value)
+  frame = requestAnimationFrame(updateClock)
+}
 
 async function play() {
   const element = audio.value
@@ -38,11 +52,13 @@ async function play() {
 function sync() {
   if (exporting) return
   revision++
+  playback.revision++
   const element = audio.value
   if (!element) return
   element.pause()
   elapsed.value = 0
-  duration.value = 0
+  duration.value = currentStep.value?.duration_seconds || 0
+  publishClock(0, duration.value)
   finished.value = false
   message.value = ''
   if (!src.value) { paused.value = true; return }
@@ -90,8 +106,8 @@ function keydown(event: KeyboardEvent) {
   if (!event.repeat) void toggle()
 }
 watch([nav.currentPage, nav.clicks], sync, { flush: 'post' })
-onMounted(() => { if (!exporting) { sync(); window.addEventListener('keydown', keydown, true) } })
-onBeforeUnmount(() => { revision++; audio.value?.pause(); window.removeEventListener('keydown', keydown, true) })
+onMounted(() => { if (!exporting) { sync(); frame = requestAnimationFrame(updateClock); window.addEventListener('keydown', keydown, true) } })
+onBeforeUnmount(() => { revision++; cancelAnimationFrame(frame); audio.value?.pause(); window.removeEventListener('keydown', keydown, true) })
 const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
 </script>
 
@@ -108,6 +124,7 @@ const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.fl
         <p class="play-help">Space to pause · Arrow keys to explore · About 4 minutes</p>
       </div>
     </div>
+    <div v-if="started && currentStep" :key="currentStep.clip" class="anchor-caption" role="status" aria-label="Visual anchor">{{ currentStep.caption }}</div>
     <div v-if="started && subtitlesEnabled && currentStep" class="narration-subtitles"
       role="region" aria-label="Narration subtitles">{{ currentStep.say }}</div>
     <div v-if="started" class="narrator-controls" @click.stop
@@ -118,7 +135,8 @@ const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.fl
       <button class="subtitle-toggle" aria-label="Subtitles" :aria-pressed="subtitlesEnabled"
         title="Toggle subtitles" @click="subtitlesEnabled = !subtitlesEnabled">CC</button>
       <div class="playback-position"><strong>{{ nav.currentPage.value }} / {{ manifest.slides.length }}</strong><span>Step {{ stepIndex + 1 }} / {{ currentSlide?.steps.length || 1 }}</span></div>
-      <div class="clip-progress"><progress :value="elapsed" :max="duration || 1" /><span>{{ clock(elapsed) }} / {{ clock(duration) }}</span></div>
+      <div class="clip-progress"><progress :value="elapsed" :max="duration || 1" /><span>{{ clock(elapsed) }} / {{ clock(Math.ceil(duration)) }}</span></div>
+      <div class="deck-progress" role="group" aria-label="Whole-deck progress"><progress aria-label="Review progress" :value="deckElapsed" :max="totalDuration" /><span>Review {{ clock(finished ? Math.ceil(totalDuration) : deckElapsed) }} / {{ clock(Math.ceil(totalDuration)) }}</span></div>
       <span v-if="finished" class="playback-end">Review complete</span>
       <span v-else-if="paused" class="paused-label">Paused</span>
     </div>

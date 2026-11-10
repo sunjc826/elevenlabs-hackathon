@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import subprocess
 import time
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
@@ -23,7 +24,8 @@ def read_manifest(path=ROOT / 'manifest.yaml'):
     seen = set()
     for slide in data['slides']:
         for step in slide['steps']:
-            assert 0 < len(step['say'].split()) < 40, 'Narration must be 1–39 words'
+            assert step['say'].strip(), 'Narration cannot be empty'
+            assert step.get('target_seconds', 1) > 0
             clip = Path(step['clip'])
             assert not clip.is_absolute() and '..' not in clip.parts and clip.suffix == '.mp3'
             assert str(clip) not in seen, 'Duplicate clip'
@@ -46,7 +48,8 @@ def main():
     steps = [step for slide in manifest['slides'] for step in slide['steps']]
     output = ROOT / ('public' if args.run == '1' else '.cache/comparison')
     ledger = ROOT / '.cache' / ('attempts-' + args.run)
-    metrics_path = ROOT / 'metrics' / ('run-' + args.run + '.json')
+    revision = deck.get('audio_revision', '')
+    metrics_path = ROOT / 'metrics' / (((revision + '-') if revision else '') + 'run-' + args.run + '.json')
     old = json.loads(metrics_path.read_text()) if metrics_path.exists() else {'clips': []}
     existing = {x['clip']: x for x in old['clips']}
     chars = sum(len(s['say']) for s in steps if not (output / s['clip']).exists())
@@ -73,7 +76,7 @@ def main():
             row = existing.get(step['clip'])
             if row is None:
                 raise RuntimeError(f'{step["clip"]}: audio exists without provenance; inspect before continuing')
-            if row['fingerprint'] != fingerprint or row['sha256'] != digest(clip.read_bytes()):
+            if row['fingerprint'] != fingerprint or row['sha256'] != digest(clip.read_bytes()) or row.get('target_seconds') != step.get('target_seconds'):
                 raise RuntimeError(f'{step["clip"]}: existing audio does not match manifest or checksum')
             mode = 'cached'
         else:
@@ -100,10 +103,24 @@ def main():
             pending.write_bytes(data)
             if not content_type.lower().startswith('audio/') or len(data) < 1000:
                 raise RuntimeError('Unexpected response saved privately for inspection; no retry')
+            raw_duration = MP3(pending).info.length
+            tempo = 1.0
+            target = step.get('target_seconds')
+            if target:
+                import imageio_ffmpeg
+                tempo = raw_duration / target
+                if not 0.65 <= tempo <= 1.5:
+                    raise RuntimeError(f'{step["clip"]}: pacing factor {tempo:.3f} needs review; raw audio retained, no retry')
+                paced = ledger / (clip.stem + '.paced.mp3')
+                subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-v', 'error', '-y', '-i', str(pending),
+                                '-af', f'atempo={tempo:.8f}', '-codec:a', 'libmp3lame', '-b:a', '128k', str(paced)], check=True)
+                paced.replace(pending)
+            data = pending.read_bytes()
             duration = MP3(pending).info.length
             row = {'clip': step['clip'], 'characters': len(step['say']), 'duration_seconds': round(duration, 3),
                    'seconds_per_1000_characters': round(duration / len(step['say']) * 1000, 3),
-                   'request_latency_seconds': round(latency, 3), 'billed_credits_header': int(cost) if cost and cost.isdigit() else None,
+                   'raw_duration_seconds': round(raw_duration, 3), 'tempo_factor': round(tempo, 6),
+                   'target_seconds': step.get('target_seconds'), 'request_latency_seconds': round(latency, 3), 'billed_credits_header': int(cost) if cost and cost.isdigit() else None,
                    'fingerprint': fingerprint, 'sha256': digest(data)}
             # Persist provenance before publishing the complete clip.
             marker.write_text(json.dumps({'state': 'complete', **row}))
@@ -122,12 +139,14 @@ def main():
             after = get_usage(key)
         except Exception:
             print('Post-run usage meter unavailable; per-response credit headers are recorded.')
-        (ROOT / '.cache' / ('usage-run-' + args.run + '.json')).write_text(json.dumps({'before': before, 'after': after}))
+        (ROOT / '.cache' / (((revision + '-') if revision else '') + 'usage-run-' + args.run + '.json')).write_text(json.dumps({'before': before, 'after': after}))
     report['observed_usage_delta'] = after['character_count'] - before['character_count'] if before and after else old.get('observed_usage_delta')
     report['total_duration_seconds'] = round(sum(r['duration_seconds'] for r in report['clips']), 3)
     report['total_characters'] = sum(r['characters'] for r in report['clips'])
     metrics_path.write_text(json.dumps(report, indent=2) + '\n')
     print(f"Total: {report['total_duration_seconds']:.2f}s", flush=True)
+    if report['total_duration_seconds'] > deck.get('runtime_cap_seconds', 240):
+        raise RuntimeError('Measured runtime exceeds deck cap; revise pacing before publishing')
 
 if __name__ == '__main__':
     try:

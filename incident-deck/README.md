@@ -1,6 +1,6 @@
 # Narrated incident post-mortem
 
-A fictional production incident, presented in 10 slides and 21 narrated click states. The bundled narration runs for 3 minutes 46 seconds. Click **Play narrated review** once, then let each clip advance the deck. **Space** pauses/resumes without changing the slide; **arrow keys** navigate and select the matching narration. Manual navigation preserves the paused state. The final clip stops on the follow-ups slide, with Replay available. Subtitles are on by default and display the current clip’s narration directly from the manifest. Use **CC** to hide or show them. They remain visible while paused and follow arrow-key navigation.
+A fictional production incident, presented in 10 slides and 28 narrated click states. The bundled narration runs for 3 minutes 53 seconds. Click **Play narrated review** once, then let each clip advance the deck. **Space** pauses/resumes without changing the slide; **arrow keys** navigate and select the matching narration. Manual navigation preserves the paused state. The final clip stops on the follow-ups slide, with Replay available. A single short anchor caption identifies the current visual. Full subtitles default off; **CC** toggles the transcript. Captions and subtitles stay synchronized while paused or navigating. The player shows both clip progress and elapsed/total review time.
 
 ## Run
 
@@ -19,9 +19,11 @@ Open the local URL printed by Slidev (port 3030). Bundled audio needs no credent
 1. `world.md` fixes the fictional names and timezone.
 2. `postmortem.md` contains the underlying incident narrative.
 3. **Edit `manifest.yaml`**, the only content input to slide and audio generation. It references the four evidence files in `excerpts/`.
-4. Run `pnpm generate` to regenerate `slides.md` and the player's `generated/manifest.json`. Never edit either generated file by hand.
+4. Run `pnpm generate` to regenerate `slides.md`, the player's `generated/manifest.json`, and `audit.md`. Never edit those generated files by hand.
 
-The first step is click state **0** (slide entry). A slide with N narration steps has N states and **N−1 `v-click` reveals**. Every later step uses an explicit click index, so there is no extra silent click before changing slides. Custom layouts keep log excerpts visible and highlight exactly the recorded line.
+Each step declares `caption` (under eight words), `target_seconds`, `visible_change` and `anchors`. Narration has no word cap; measured total runtime must stay below 240 seconds. Timeline targets are 4–6 seconds and evidence interpretations 15–20 seconds. `audit.md` records the visible change and narrated anchors for every state.
+
+The first step is click state **0** (slide entry). A slide with N narration steps has N states and **N−1 `v-click` reveals**. Every later step uses an explicit click index, so there is no extra silent click before changing slides. Evidence uses three states: unhighlighted source, interpreted finding, then an updated packet-path miniature. The host source is a two-series replay chart, with raw counters collapsed beneath it. The timeline uses three aligned metric rows and one timestamped marker per step. Hypotheses and verdict share the same packet-path component.
 
 ## Audio generation
 
@@ -35,7 +37,11 @@ python3 -m venv .venv
 
 New synthesis needs `ELEVENLABS_API_KEY` in the private process environment. The script uses the manifest's voice/model/settings and submits once per missing step. Existing clips require matching provenance and hashes. An attempt ledger blocks ambiguous retries. Run 1 writes `public/audio/`; run 2 writes ignored `.cache/comparison/audio/`. Both produce public, credential-free measurement rows under `metrics/`. Subscription snapshots and request-attempt state remain in ignored `.cache/`.
 
-The two initial runs are already complete. Keep the private cache if continuing generation on another machine. To intentionally change narration, give the affected step a new clip path so that the previous generated clip remains available for comparison. Do not clear attempt markers to retry a timed-out paid request without investigation. No generation occurs during build or deployment.
+The two initial baseline runs are complete; the current visual revision has one new measured run. `deck.audio_revision` separates its metrics from the baseline. For steps with `target_seconds`, FFmpeg applies pitch-preserving tempo adjustment once after synthesis; metrics record raw duration, tempo factor and final duration. Existing matching clips are reused without synthesis or re-encoding. Keep the private cache if continuing generation on another machine. To intentionally change narration, give the affected step a new clip path so that the previous generated clip remains available for comparison. Do not clear attempt markers to retry a timed-out paid request without investigation. No generation occurs during build or deployment.
+
+## Animation clock
+
+The player publishes `--clip-duration` from loaded media metadata and `--clip-delay` from negative media time every animation frame. SVG line drawing uses `stroke-dashoffset`, normalized path lengths, and those CSS variables. CSS animations are paused and sampled at the media position, so buffering, pause, seek and arrow navigation cannot let the picture run ahead of narration. Each segment ends exactly at its current marker when its clip ends. The ring animation reads the same CSS duration and media time; occupancy and drop count run once, reset on a new clip, and hold when paused. No visual duration is hardcoded in seconds.
 
 ## Verify and deploy
 
@@ -63,4 +69,6 @@ pnpm export:png
 .venv/bin/python export_video.py
 ```
 
-This uses Slidev’s `--with-clicks` PNG export and the same manifest clip order to produce `exports/incident-review.mp4` plus `exports/click-states.zip`. FFmpeg encodes H.264/AAC at 1920×1080 and 30 fps. Each segment pads only to the next video frame, so audio is never shortened to fit a slide. Generated export files stay out of Git. The live player controls are suppressed in print/export views.
+This optional **static-state** export uses Slidev’s `--with-clicks` PNG export and the same manifest clip order to produce `exports/incident-review.mp4` plus `exports/click-states.zip`. FFmpeg encodes H.264/AAC at 1920×1080 and 30 fps. Each segment pads only to the next video frame, so audio is never shortened to fit a slide. Generated export files stay out of Git. The live player controls are suppressed in print/export views.
+
+Static export holds the completed click states; it does not capture the live line/ring animations. Any existing files in `exports/` predate this visual revision until explicitly regenerated. Use the live deck for synchronized animation.

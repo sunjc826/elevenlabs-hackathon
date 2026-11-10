@@ -41,3 +41,7 @@ The upgraded driver on prism-b01 supplied a default receive ring of 512 descript
 | Pin the receive ring to 4096 descriptors in host configuration. | Mira | Both hosts report 4096 after driver reload and reboot. |
 | Alert on any positive receive-miss counter delta. | Mira | Injected misses trigger an alert; reset/wrap handling does not create a false negative. |
 | Run a pre-open burst replay after every driver change. | Mira | Representative peak plus headroom produces zero receive misses and no handler sequence gaps before promotion. |
+
+## Visual reconstruction
+
+The deck’s feed-rate shape and ring occupancy are schematic illustrations, not additional measured telemetry. The host replay chart aligns the fictional before/after counts to the incident clock: 512 slots reproduce 640 misses; 4096 slots remain at zero. The plotted step locates the recorded finding at 09:00:00.240; intermediate pixel positions do not claim additional counter samples. The full timeline retains 08:40–09:05 and all five absolute event timestamps.

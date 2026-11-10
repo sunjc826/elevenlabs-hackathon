@@ -19,6 +19,9 @@
   },
   "include": [
     "global-bottom.vue",
+    "components/**/*.vue",
+    "playback.ts",
+    "types.ts",
     "layouts/**/*.vue",
     "setup/**/*.ts",
     "env.d.ts"

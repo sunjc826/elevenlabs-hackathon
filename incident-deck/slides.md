@@ -5,7 +5,7 @@ info: Fictional narrated incident review
 colorSchema: dark
 aspectRatio: 16/9
 canvasWidth: 1280
-transition: fade
+transition: none
 drawings:
   enabled: false
 fonts:
@@ -21,14 +21,10 @@ clicks: 0
 
 # Opening-burst packet loss
 
-<div class="steps">
-
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><div class='cover-subtitle'>Larkspur Trading</div><div class='cover-metric'>3 minutes<span>from gap to recovery</span></div><p class='cover-note'>Fictional incident review · 14 October 2026</p></div>
-
-</div>
+<IncidentVisual :slide-index="0" :step-index="$clicks" />
 
 <!--
-Step 0: This review follows a three-minute interruption at Larkspur Trading. We'll trace missing feed messages to a host setting, then explain how the next routine upgrade should be tested.
+Step 0: This fictional Larkspur Trading review follows three minutes of interrupted trading. We will track feed traffic, receive misses, and strategy state, then locate the loss along the packet path.
 -->
 
 ---
@@ -38,50 +34,28 @@ clicks: 4
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# Eighteen quiet minutes, then a burst
+# The opening burst
 
-<p class="time-zone">2026-10-14 · VST (UTC+08:00)</p>
+<IncidentVisual :slide-index="1" :step-index="$clicks" />
 
-<div class="steps">
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><time>08:42:00</time><div><strong>Driver upgrade complete</strong><span>prism-b01 passes quiet-feed checks</span></div></div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<v-click at="1">
+<v-click at="3"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<div class="step" :class="{ active: $clicks === 1 }" data-step="1"><time>09:00:00</time><div><strong>Market opens</strong><span>Prism multicast traffic surges</span></div></div>
-
-</v-click>
-
-<v-click at="2">
-
-<div class="step" :class="{ active: $clicks === 2 }" data-step="2"><time>09:00:00.240</time><div><strong>B-channel sequence gap</strong><span>640 messages missing on prism-b01</span></div></div>
-
-</v-click>
-
-<v-click at="3">
-
-<div class="step" :class="{ active: $clicks === 3 }" data-step="3"><time>09:00:00.480</time><div><strong>Risk halt</strong><span>Kestrel instances stop on stale data</span></div></div>
-
-</v-click>
-
-<v-click at="4">
-
-<div class="step" :class="{ active: $clicks === 4 }" data-step="4"><time>09:03:00</time><div><strong>Trading resumes</strong><span>Mira validates prism-a01 and releases the halt</span></div></div>
-
-</v-click>
-
-</div>
+<v-click at="4"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: At eight forty-two Vesper Standard Time, the B-channel host passed maintenance checks. Packets could arrive, but the checks did not test how much traffic the host could absorb at once.
+Step 0: At eight forty-two, the driver upgrade passed quiet checks; the strategy kept running.
 
-Step 1: Eighteen minutes later, the open changed the workload abruptly. The opening burst demanded much more buffering than the quiet feed had needed, before packet processing could catch up.
+Step 1: Eighteen minutes later, the market opens. The top trace spikes with incoming feed traffic.
 
-Step 2: Within a quarter of a second, the handler detected missing sequence numbers. That locates the symptom at the open, but cannot tell us where the packets disappeared.
+Step 2: A quarter-second later, the middle trace steps to six hundred forty receive misses.
 
-Step 3: Another quarter-second later, the freshness guard halted the strategy instances. This protective response stopped decisions on an incomplete market view while the feed problem was investigated.
+Step 3: Another quarter-second later, the bottom band turns red: stale data triggers the risk halt.
 
-Step 4: About three minutes after the gap, Mira completed the move to the unchanged A channel. Fresh data restored trading, leaving the B-channel failure to be explained.
+Step 4: Three minutes later, Mira switches to the A channel. The bottom band returns to running.
 -->
 
 ---
@@ -91,179 +65,112 @@ clicks: 2
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# Three possible places to lose packets
+# Where could packets disappear?
 
-<div class="steps">
+<IncidentVisual :slide-index="2" :step-index="$clicks" />
 
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><span class='standing pending'>COULD NOT BE EXCLUDED</span><h2>Exchange publication</h2><p>Did Vesper Exchange omit messages from Prism?</p></div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<v-click at="1">
-
-<div class="step" :class="{ active: $clicks === 1 }" data-step="1"><span class='standing pending'>COULD NOT BE EXCLUDED</span><h2>Multicast membership</h2><p>Did leaf-17 stop forwarding the subscribed group?</p></div>
-
-</v-click>
-
-<v-click at="2">
-
-<div class="step" :class="{ active: $clicks === 2 }" data-step="2"><span class='standing pending'>COULD NOT BE EXCLUDED</span><h2>Host receive path</h2><p>Did prism-b01 run out of receive capacity?</p></div>
-
-</v-click>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: Initially, an exchange publication gap could not be excluded. Healthy receivers can report messages that were never sent, so we needed an independent account of publication.
+Step 0: Follow the path: Vesper Exchange, leaf-seventeen, the prism B host ring, the handler, then Kestrel. The highlighted exchange could have omitted messages; that possibility could not be excluded.
 
-Step 1: A lost multicast membership could not be excluded either. That would interrupt delivery to the handler even if the exchange published every message.
+Step 1: The highlighted leaf-seventeen could have lost multicast membership. That possibility also could not be excluded.
 
-Step 2: Host packet loss also could not be excluded. The recent driver change made it worth investigating, but timing alone was insufficient to confirm it as the cause.
+Step 2: The host ring now lights up. Packet loss here could not be excluded after the driver change.
 -->
 
 ---
 layout: evidence
-clicks: 0
+clicks: 2
 ---
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# The symptom reaches the handler
+# Handler sequence log
 
-<p class="evidence-source">Feed handler log, host prism-b01</p>
+<IncidentVisual :slide-index="3" :step-index="$clicks" />
 
-<div class="excerpt" role="region" aria-label="Evidence excerpt">
-<div class="log-line"><span class="line-number">01</span><pre>2026-10-14T08:59:55.000+08:00 INFO host=prism-b01 process=handler</pre></div>
-<div class="log-line"><span class="line-number">02</span><pre>2026-10-14T08:59:55.010+08:00 INFO feed=Prism channel=B</pre></div>
-<div class="log-line"><span class="line-number">03</span><pre>2026-10-14T08:59:55.020+08:00 INFO site=VD-4 session=20261014</pre></div>
-<div class="log-line"><span class="line-number">04</span><pre>2026-10-14T08:59:56.000+08:00 INFO heartbeat age_ms=2</pre></div>
-<div class="log-line"><span class="line-number">05</span><pre>2026-10-14T08:59:57.000+08:00 INFO decoder schema=7</pre></div>
-<div class="log-line"><span class="line-number">06</span><pre>2026-10-14T08:59:58.000+08:00 INFO journal segment=114</pre></div>
-<div class="log-line"><span class="line-number">07</span><pre>2026-10-14T08:59:59.000+08:00 INFO downstream=Kestrel attached=true</pre></div>
-<div class="log-line finding"><span class="line-number">08</span><pre>2026-10-14T09:00:00.240+08:00 WARN expected=78124001 received=78124641 gap=640</pre></div>
-<div class="log-line"><span class="line-number">09</span><pre>2026-10-14T09:00:00.250+08:00 INFO journal flush_requested=true</pre></div>
-<div class="log-line"><span class="line-number">10</span><pre>2026-10-14T09:00:01.000+08:00 INFO heartbeat age_ms=3</pre></div>
-<div class="log-line"><span class="line-number">11</span><pre>2026-10-14T09:00:02.000+08:00 INFO metrics scrape_complete=true</pre></div>
-<div class="log-line"><span class="line-number">12</span><pre>2026-10-14T09:00:03.000+08:00 INFO journal segment=115</pre></div>
-</div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<div class="steps">
-
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><strong>640 missing messages</strong><span>Symptom confirmed. Loss location still unknown.</span></div>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: The highlighted line compares the next expected sequence with the next arrival. Their difference establishes missing messages. It confirms the symptom, while leaving all three possible loss locations open.
+Step 0: Look at the B-channel handler log. We need to establish the symptom before locating the loss.
+
+Step 1: The highlighted line compares the expected sequence with the next arrival. The difference is six hundred forty missing messages. That confirms a discontinuity at the receiver, but it does not identify where packets disappeared. The other log lines simply establish the surrounding capture context.
+
+Step 2: The miniature confirms the handler symptom. Exchange, switch membership, and host loss still could not be excluded.
 -->
 
 ---
 layout: evidence
-clicks: 0
+clicks: 2
 ---
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# Publication stayed continuous
+# Exchange publication audit
 
-<p class="evidence-source">Vesper Exchange status page, Prism incident-window report</p>
+<IncidentVisual :slide-index="4" :step-index="$clicks" />
 
-<div class="excerpt" role="region" aria-label="Evidence excerpt">
-<div class="log-line"><span class="line-number">01</span><pre>Vesper Exchange</pre></div>
-<div class="log-line"><span class="line-number">02</span><pre>Prism service status</pre></div>
-<div class="log-line"><span class="line-number">03</span><pre>Report date: 2026-10-14</pre></div>
-<div class="log-line"><span class="line-number">04</span><pre>Display timezone: VST (UTC+08:00)</pre></div>
-<div class="log-line"><span class="line-number">05</span><pre>Component: multicast publication</pre></div>
-<div class="log-line"><span class="line-number">06</span><pre>Channels in scope: A, B</pre></div>
-<div class="log-line"><span class="line-number">07</span><pre>Reviewed window: 08:59:50 to 09:03:10</pre></div>
-<div class="log-line finding"><span class="line-number">08</span><pre>Finding: no incident; A/B publication continuous; publisher sequence gaps=0</pre></div>
-<div class="log-line"><span class="line-number">09</span><pre>Report generated: 09:12:00</pre></div>
-<div class="log-line"><span class="line-number">10</span><pre>Maintenance calendar: no scheduled publisher work in reviewed window</pre></div>
-<div class="log-line"><span class="line-number">11</span><pre>Report scope: publisher egress sequence audit</pre></div>
-<div class="log-line"><span class="line-number">12</span><pre>Next routine update: 09:30:00</pre></div>
-</div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<div class="steps">
-
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><strong>Exchange gap ruled out</strong><span>The report covers the incident window and both channels.</span></div>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: The highlighted report explicitly checks publication continuity across the incident window. This is stronger than a green status badge. Within this fictional record, it rules out the exchange-gap hypothesis.
+Step 0: Look at the exchange status report. We need publication evidence covering the incident window.
+
+Step 1: The highlighted finding reports continuous publication on both channels across the reviewed window. This is an explicit sequence audit, not just a green service badge. Within this fictional record, it rules out an exchange publication gap. The surrounding report identifies the window and audit scope.
+
+Step 2: The miniature crosses out the exchange. Its publication-gap hypothesis is ruled out; downstream candidates remain open.
 -->
 
 ---
 layout: evidence
-clicks: 0
+clicks: 2
 ---
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# Membership never expired
+# Switch membership audit
 
-<p class="evidence-source">Access-switch log, leaf-17</p>
+<IncidentVisual :slide-index="5" :step-index="$clicks" />
 
-<div class="excerpt" role="region" aria-label="Evidence excerpt">
-<div class="log-line"><span class="line-number">01</span><pre>2026-10-14T08:59:55+08:00 leaf-17 daemon[42]: audit session=20261014</pre></div>
-<div class="log-line"><span class="line-number">02</span><pre>2026-10-14T08:59:56+08:00 leaf-17 daemon[42]: site=VD-4</pre></div>
-<div class="log-line"><span class="line-number">03</span><pre>2026-10-14T08:59:57+08:00 leaf-17 daemon[42]: feed=Prism</pre></div>
-<div class="log-line"><span class="line-number">04</span><pre>2026-10-14T08:59:58+08:00 leaf-17 daemon[42]: group_a=239.10.4.1 vlan=104</pre></div>
-<div class="log-line"><span class="line-number">05</span><pre>2026-10-14T08:59:59+08:00 leaf-17 daemon[42]: group_b=239.10.4.2 vlan=104</pre></div>
-<div class="log-line"><span class="line-number">06</span><pre>2026-10-14T09:00:00+08:00 leaf-17 daemon[42]: query_interval_s=30</pre></div>
-<div class="log-line"><span class="line-number">07</span><pre>2026-10-14T09:03:09+08:00 leaf-17 daemon[42]: audit window=08:59:50..09:03:10</pre></div>
-<div class="log-line finding"><span class="line-number">08</span><pre>2026-10-14T09:03:10+08:00 leaf-17 daemon[42]: A/B joins intact; leaves=0 expiry=0</pre></div>
-<div class="log-line"><span class="line-number">09</span><pre>2026-10-14T09:03:11+08:00 leaf-17 daemon[42]: port_a=prism-a01 port_b=prism-b01</pre></div>
-<div class="log-line"><span class="line-number">10</span><pre>2026-10-14T09:03:12+08:00 leaf-17 daemon[42]: audit archived=true</pre></div>
-<div class="log-line"><span class="line-number">11</span><pre>2026-10-14T09:03:13+08:00 leaf-17 daemon[42]: clock source=local</pre></div>
-<div class="log-line"><span class="line-number">12</span><pre>2026-10-14T09:03:14+08:00 leaf-17 daemon[42]: collector queue_depth=0</pre></div>
-</div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<div class="steps">
-
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><strong>Membership loss ruled out</strong><span>Both feed subscriptions remained present throughout the window.</span></div>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: The highlighted audit covers both handler ports throughout the failure window. No membership expired or left. That rules out membership loss, while leaving other switch faults outside this test.
+Step 0: Look at leaf-seventeen’s membership audit. We need to know whether the subscriptions survived the open.
+
+Step 1: The highlighted audit shows both memberships stayed present across the failure window. There were no departures or expirations to interrupt multicast delivery. That rules out the membership-loss hypothesis specifically. It does not clear every possible switch fault; the surrounding lines define the ports and audit window.
+
+Step 2: The miniature crosses out membership loss at leaf-seventeen. Host receive loss remains the unresolved candidate.
 -->
 
 ---
 layout: evidence
-clicks: 0
+clicks: 2
 ---
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# Receive misses rise at the open
+# Host receive-miss replay
 
-<p class="evidence-source">Host NIC counter snapshot and replay audit, prism-b01</p>
+<IncidentVisual :slide-index="6" :step-index="$clicks" />
 
-<div class="excerpt" role="region" aria-label="Evidence excerpt">
-<div class="log-line"><span class="line-number">01</span><pre>Host: prism-b01       Site: VD-4       Interface: rx0</pre></div>
-<div class="log-line"><span class="line-number">02</span><pre>Date: 2026-10-14      Timezone: VST (UTC+08:00)</pre></div>
-<div class="log-line"><span class="line-number">03</span><pre>Capture: NIC counters plus controlled replay audit</pre></div>
-<div class="log-line"><span class="line-number">04</span><pre>Driver: 3.8.0 -&gt; 3.9.0 during 08:42:00 maintenance</pre></div>
-<div class="log-line"><span class="line-number">05</span><pre>Counter width: 64 bits; no resets in capture window</pre></div>
-<div class="log-line"><span class="line-number">06</span><pre>Metric                           before open       at 09:00:00.240</pre></div>
-<div class="log-line"><span class="line-number">07</span><pre>-----------------------------------------------------------------</pre></div>
-<div class="log-line finding"><span class="line-number">08</span><pre>rx_missed_errors                 0                 640  [ring 4096-&gt;512; replay misses 512:640 / 4096:0]</pre></div>
-<div class="log-line"><span class="line-number">09</span><pre>rx_crc_errors                    0                 0</pre></div>
-<div class="log-line"><span class="line-number">10</span><pre>rx_length_errors                 0                 0</pre></div>
-<div class="log-line"><span class="line-number">11</span><pre>rx_link_down_events              0                 0</pre></div>
-<div class="log-line"><span class="line-number">12</span><pre>-----------------------------------------------------------------</pre></div>
-<div class="log-line"><span class="line-number">13</span><pre>Replay: identical captured burst, ring capacity is the only variable</pre></div>
-<div class="log-line"><span class="line-number">14</span><pre>Counter semantics: missed receives due to exhausted descriptor capacity</pre></div>
-<div class="log-line"><span class="line-number">15</span><pre>Capture generated: 10:10:00; replay isolated from live strategy input</pre></div>
-</div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<div class="steps">
-
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><strong>Host packet loss confirmed</strong><span>512 descriptors after upgrade; replay succeeds at 4096.</span></div>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: The highlighted row's right-hand counter shows receive misses rising at the open. Replay reproduces loss with the smaller ring and clears it at the original capacity, confirming the host mechanism.
+Step 0: Compare the two receive-miss traces under the same replay burst. Only ring capacity changes.
+
+Step 1: The orange trace climbs to six hundred forty misses with five hundred twelve slots. The green trace stays at zero with four thousand ninety-six. The step aligns with the open; replay isolates ring capacity as the cause. The collapsed raw counters preserve the underlying snapshot.
+
+Step 2: The miniature marks the host ring confirmed. The receive misses and controlled replay locate the loss here.
 -->
 
 ---
@@ -275,57 +182,33 @@ clicks: 2
 
 # The evidence narrows the cause
 
-<div class="steps">
+<IncidentVisual :slide-index="7" :step-index="$clicks" />
 
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><span class='standing excluded'>RULED OUT</span><h2>Exchange publication gap</h2><p>Incident-window publication report is continuous.</p></div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<v-click at="1">
-
-<div class="step" :class="{ active: $clicks === 1 }" data-step="1"><span class='standing excluded'>RULED OUT</span><h2>Multicast membership loss</h2><p>Switch audit shows uninterrupted subscriptions.</p></div>
-
-</v-click>
-
-<v-click at="2">
-
-<div class="step" :class="{ active: $clicks === 2 }" data-step="2"><span class='standing confirmed'>CONFIRMED</span><h2>Host receive-ring exhaustion</h2><p>Miss counters and controlled replay identify prism-b01.</p></div>
-
-</v-click>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: The exchange-gap hypothesis is ruled out. The publication report covers the relevant interval, so missing messages at the receiver do not imply missing publication.
+Step 0: Cross out the exchange publication gap: the incident-window report shows continuous publication.
 
-Step 1: The membership-loss hypothesis is ruled out. The switch retained the subscriptions. The conclusion stays narrow because this evidence addresses membership, rather than the whole network.
+Step 1: Cross out membership loss at leaf-seventeen: the switch retained both subscriptions.
 
-Step 2: Host receive loss is confirmed. The counter timing locates the failure, and changing only ring capacity in replay explains why the new default failed under a burst.
+Step 2: Confirm the host ring: receive misses and the controlled replay identify exhausted capacity.
 -->
 
 ---
 layout: mechanism
-clicks: 1
+clicks: 0
 ---
 
 <!-- GENERATED from manifest.yaml. Do not edit. -->
 
-# A default became a production limit
+# The same burst, two receive rings
 
-<div class="steps">
-
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><div class='ring-comparison'><div><span>Previous receive ring</span><strong>4096</strong></div><div><span>New driver default</span><strong class='danger'>512</strong></div></div><p>Descriptors available before packet processing catches up</p></div>
-
-<v-click at="1">
-
-<div class="step" :class="{ active: $clicks === 1 }" data-step="1"><div class='mechanism-finding'><strong>Opening burst exceeds buffer capacity</strong><p>Receive misses cause a sequence gap, stale strategy data and a protective halt.</p></div></div>
-
-</v-click>
-
-</div>
+<IncidentVisual :slide-index="8" :step-index="$clicks" />
 
 <!--
-Step 0: The driver reduced the receive ring to one eighth of its previous capacity. Because configuration inherited that default, a routine software change silently reduced the host's tolerance for short traffic bursts.
-
-Step 1: The open supplied the trigger. The unpinned ring size supplied the vulnerability. A quiet health check could pass both configurations, which is why the missing burst test mattered.
+Step 0: Both buffers receive the same burst. On the left, four thousand ninety-six slots absorb it, then drain as processing catches up. On the right, five hundred twelve slots fill first; overflow counts up to six hundred forty dropped packets. The new driver silently chose that smaller default. A quiet check never exercised this limit.
 -->
 
 ---
@@ -337,28 +220,16 @@ clicks: 2
 
 # Make burst capacity explicit
 
-<div class="steps">
+<IncidentVisual :slide-index="9" :step-index="$clicks" />
 
-<div class="step" :class="{ active: $clicks === 0 }" data-step="0"><span class='action-number'>01</span><div><h2>Pin 4096 descriptors</h2><p>Verify both hosts after reload and reboot.</p></div></div>
+<v-click at="1"><span class="click-registration" aria-hidden="true"></span></v-click>
 
-<v-click at="1">
-
-<div class="step" :class="{ active: $clicks === 1 }" data-step="1"><span class='action-number'>02</span><div><h2>Alert on receive misses</h2><p>Trigger on a positive counter delta.</p></div></div>
-
-</v-click>
-
-<v-click at="2">
-
-<div class="step" :class="{ active: $clicks === 2 }" data-step="2"><span class='action-number'>03</span><div><h2>Replay the pre-open burst</h2><p>Require zero misses and zero gaps after every driver change.</p></div></div>
-
-</v-click>
-
-</div>
+<v-click at="2"><span class="click-registration" aria-hidden="true"></span></v-click>
 
 <!--
-Step 0: First, pin the ring size in configuration and verify it after reload and reboot. That makes the required capacity an explicit operating choice instead of an undocumented driver default.
+Step 0: Pin four thousand ninety-six descriptors in configuration, then verify both hosts after reload and reboot.
 
-Step 1: Second, alert when receive misses increase. This gives Mira a direct signal from the failing layer, shortening the investigation instead of relying only on a downstream stale-data alarm.
+Step 1: Alert on any increase in receive misses, giving Mira a direct signal from the failing layer.
 
-Step 2: Finally, make a representative burst replay part of every driver change. Together, these checks preserve the capacity we depend on and prove it before the next market open.
+Step 2: After every driver change, replay a pre-open burst. Require zero misses and zero handler gaps before promotion.
 -->
