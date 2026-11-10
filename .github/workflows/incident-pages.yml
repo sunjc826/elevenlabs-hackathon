@@ -5,7 +5,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -42,32 +41,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Wait for any legacy branch publisher
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 - <<'PYTHON'
-          import json, os, time
-          from urllib.request import Request, urlopen
-          repository = os.environ['GITHUB_REPOSITORY']
-          def get(path):
-              request = Request('https://api.github.com/repos/' + repository + path,
-                                headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
-                                         'Accept': 'application/vnd.github+json'})
-              with urlopen(request, timeout=30) as response:
-                  return json.load(response)
-          if get('/pages').get('build_type') == 'legacy':
-              for attempt in range(36):
-                  runs = get('/actions/runs?per_page=100&head_sha=' + os.environ['GITHUB_SHA'])['workflow_runs']
-                  legacy = [r for r in runs if r['path'] == 'dynamic/pages/pages-build-deployment']
-                  if legacy and all(r['status'] == 'completed' for r in legacy):
-                      print('Legacy publisher finished. Deploying the deck after it.')
-                      break
-                  time.sleep(5)
-              else:
-                  raise SystemExit('Legacy publisher did not finish; choose GitHub Actions as the Pages source.')
-          else:
-              print('Pages already uses GitHub Actions.')
-          PYTHON
       - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
         id: deployment

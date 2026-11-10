@@ -59,4 +59,4 @@ The MP4 is 1920×1080, H.264/AAC, 30 fps, 226.19 seconds and approximately 6.33 
 
 ## Hosting note
 
-The repository also had a legacy branch-based Pages publisher. A direct attempt to change its source through the deployment token returned HTTP 403. The deck deployment therefore checks the Pages build mode and waits for the legacy publisher for the same commit to complete before publishing its artifact. A completion-event trigger did not fire for this built-in workflow, so the final workflow uses an explicit status check instead. Selecting **GitHub Actions** as the Pages source is still preferable because it avoids the redundant branch build.
+The repository initially had a legacy branch-based Pages publisher, so the deck workflow waited for that publisher before deploying. On 2026-11-10 the owner switched the Pages publishing source to **GitHub Actions**. The legacy wait and its Actions-read permission have been removed; the deck workflow now publishes its build directly.
