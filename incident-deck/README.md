@@ -4,7 +4,7 @@ A fictional production incident, presented in 10 slides and 28 narrated click st
 
 ## Run
 
-Use Node.js 22.22+ and pnpm 11.22.0. This package has its own dependency lockfile; Last Train at the repository root is unchanged.
+Use Node.js 22.22+ and pnpm 11.22.0. This package owns a pnpm workspace and lockfile shared with `../packages/narrated-deck`. Keep both directories when copying the example. Last Train at the repository root remains independent.
 
 ```sh
 cd incident-deck
@@ -38,6 +38,10 @@ python3 -m venv .venv
 New synthesis needs `ELEVENLABS_API_KEY` in the private process environment. The script uses the manifest's voice/model/settings and submits once per missing step. Existing clips require matching provenance and hashes. An attempt ledger blocks ambiguous retries. Run 1 writes `public/audio/`; run 2 writes ignored `.cache/comparison/audio/`. Both produce public, credential-free measurement rows under `metrics/`. Subscription snapshots and request-attempt state remain in ignored `.cache/`.
 
 The two initial baseline runs are complete; the current visual revision has one new measured run. `deck.audio_revision` separates its metrics from the baseline. For steps with `target_seconds`, FFmpeg applies pitch-preserving tempo adjustment once after synthesis; metrics record raw duration, tempo factor and final duration. Existing matching clips are reused without synthesis or re-encoding. Keep the private cache if continuing generation on another machine. To intentionally change narration, give the affected step a new clip path so that the previous generated clip remains available for comparison. Do not clear attempt markers to retry a timed-out paid request without investigation. No generation occurs during build or deployment.
+
+## Shared library
+
+The player, media clock, event metrics, path diagram, evidence panel, comparison chart, buffer animation and common manifest validation are imported from [`@hackathon/narrated-deck`](../packages/narrated-deck/README.md). `global-bottom.vue` only adapts Slidev navigation; `components/IncidentVisual.vue` supplies the fictional incident data and presentation choices. The [authoring skill](../.agents/skills/narrated-explanations/SKILL.md) describes how to apply these patterns to another subject.
 
 ## Animation clock
 

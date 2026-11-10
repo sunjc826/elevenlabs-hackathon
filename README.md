@@ -4,6 +4,10 @@ The current owner-directed build is a **narrated incident post-mortem deck** in 
 
 **Last Train remains an assistant-created exploratory reference demo.** It is not the chosen product or committed submission, and its existing Cloudflare deployment is separate from the deck. Preserve it unless the owner requests changes.
 
+## Reusable narrated explanations
+
+The repository includes a [narrated-explanations skill](.agents/skills/narrated-explanations/SKILL.md) for authoring and auditing audio-led reviews, plus the [narrated-deck Vue library](packages/narrated-deck/README.md) for playback, synchronized visual components and manifest validation. The incident deck consumes the library; a separate queue example demonstrates reuse without Slidev or ElevenLabs. These are reusable mechanics, not a commitment to the incident story or Last Train as a product.
+
 ## Existing demo: Last Train
 
 A phone-first branching audio mystery demonstrating ElevenLabs narration, generated ambience, and Cloudflare hosting. Nine narrated scenes and four endings. These demonstrate a possible format, not a product commitment.

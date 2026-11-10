@@ -1,3 +1,6 @@
+packages:
+  - '.'
+  - '../packages/narrated-deck'
 minimumReleaseAge: 20160
 minimumReleaseAgeStrict: true
 allowBuilds:

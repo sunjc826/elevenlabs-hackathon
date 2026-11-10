@@ -1,6 +1,6 @@
 # Visual and narration audit
 
-Generated from the manifest. Each state changes its active visual immediately (before narration playback). Retained axes, path nodes, source context and log filler are subdued reference context, not additional claims; narration names the active anchor and interprets the finding without reading logs. Every listed anchor is checked against its narration text; browser screenshots check that each state visibly differs within the first second. Full subtitles default off.
+Each row records the intended first-second change and spoken anchors. Text matching is a structural check, not proof of comprehension or visual timing; inspect the rendered states and test playback. Retained axes and source context need not be read aloud.
 
 | Slide / step | Seconds | Caption | First-second change | Narrated anchors |
 |---|---:|---|---|---|
@@ -33,6 +33,4 @@ Generated from the manifest. Each state changes its active visual immediately (b
 | follow-ups / 1 | 5.98 | Alert on receive-miss increases | Action changes to counter alert | Alert; increase in receive misses; Mira |
 | follow-ups / 2 | 7.00 | Burst test · zero misses or gaps | Action changes to pre-open burst test | every driver change; pre-open burst; zero misses; zero handler gaps |
 
-Total measured clip duration: **232.59 seconds** / 240-second cap.
-
-Timeline shape and ring occupancy are schematic. Host chart endpoints come from the fictional counter/replay record; intermediate plotting positions illustrate the step rather than claiming additional samples. Absolute incident timestamps remain visible.
+Total clip duration: **232.59 seconds** / 240-second cap.

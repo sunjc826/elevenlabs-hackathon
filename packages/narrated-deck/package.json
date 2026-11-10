@@ -1,0 +1,29 @@
+{
+  "name": "@hackathon/narrated-deck",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": ["src", "README.md"],
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": {"types": "./src/core.d.mts", "import": "./src/core.mjs"},
+    "./manifest": "./src/manifest.mjs",
+    "./style.css": "./src/style.css"
+  },
+  "peerDependencies": {"vue": "^3.5.0"},
+  "devDependencies": {
+    "vue": "3.5.42",
+    "@vitejs/plugin-vue": "6.0.10",
+    "vite": "8.3.5",
+    "typescript": "5.7.3",
+    "vue-tsc": "3.1.1",
+    "@playwright/test": "1.56.1"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
+    "dev": "vite --config examples/basic/vite.config.mjs",
+    "build": "vite build --config examples/basic/vite.config.mjs",
+    "test:browser": "node node_modules/@playwright/test/cli.js test"
+  }
+}

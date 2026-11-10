@@ -1,0 +1,4 @@
+interface:
+  display_name: "Narrated Explanations"
+  short_description: "Build audio-led visual reviews and reusable patterns"
+  default_prompt: "Use $narrated-explanations to turn this material into a narrated visual review."

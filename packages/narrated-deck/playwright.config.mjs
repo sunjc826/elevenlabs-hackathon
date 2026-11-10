@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests',testMatch:'reuse.spec.mjs',workers:1,timeout:30000,outputDir:'.qa/test-results',use:{baseURL:'http://127.0.0.1:4181/',viewport:{width:1440,height:900}},webServer:{command:'pnpm build && pnpm exec vite preview --config examples/basic/vite.config.mjs --host 127.0.0.1 --port 4181',port:4181,reuseExistingServer:false}});

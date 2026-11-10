@@ -10,7 +10,7 @@
     "generate": "node generate.mjs",
     "dev": "pnpm generate && slidev --port 3030",
     "build": "pnpm generate && slidev build --base /elevenlabs-hackathon/",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs ../packages/narrated-deck/tests/*.test.mjs",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "export:png": "slidev export --format png --with-clicks --output .qa/export --wait 250",
     "test:browser": "node node_modules/@playwright/test/cli.js test"
@@ -21,7 +21,8 @@
     "@slidev/theme-default": "0.25.0",
     "vue": "3.5.42",
     "vue-router": "5.3.1",
-    "yaml": "2.8.1"
+    "yaml": "2.8.1",
+    "@hackathon/narrated-deck": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
