@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useNav, useSlideContext } from '@slidev/client'
 import manifest from './generated/manifest.json'
 
+const exporting = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('print')
 const nav = useNav()
 const { $slidev } = useSlideContext()
 const audio = ref<HTMLAudioElement>()
@@ -34,6 +35,7 @@ async function play() {
   }
 }
 function sync() {
+  if (exporting) return
   revision++
   const element = audio.value
   if (!element) return
@@ -87,7 +89,7 @@ function keydown(event: KeyboardEvent) {
   if (!event.repeat) void toggle()
 }
 watch([nav.currentPage, nav.clicks], sync, { flush: 'post' })
-onMounted(() => { sync(); window.addEventListener('keydown', keydown, true) })
+onMounted(() => { if (!exporting) { sync(); window.addEventListener('keydown', keydown, true) } })
 onBeforeUnmount(() => { revision++; audio.value?.pause(); window.removeEventListener('keydown', keydown, true) })
 const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
 </script>
@@ -95,7 +97,7 @@ const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.fl
 <template>
   <audio ref="audio" preload="auto" @ended="ended" @error="failed"
     @timeupdate="elapsed = audio?.currentTime || 0" @loadedmetadata="duration = audio?.duration || 0" />
-  <Teleport to="body">
+  <Teleport v-if="!exporting" to="body">
     <div v-if="!started" class="play-overlay">
       <div class="play-intro">
         <span class="intro-label">A narrated incident review</span>

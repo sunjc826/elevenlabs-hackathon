@@ -6,7 +6,7 @@ async function audioState(page) { return page.locator('audio').evaluate(a => ({ 
 async function begin(page) {
   await page.goto('./');
   await page.getByRole('button', {name: 'Play narrated review'}).click();
-  await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+  await expect.poll(async () => (await audioState(page)).time).toBeGreaterThan(0.1);
 }
 
 test('gesture gate, Space pause, arrow navigation, and exact resume position', async ({page}) => {
@@ -40,6 +40,7 @@ test('all 21 real media-ended events advance exactly once and stop at the end', 
   for (const [index, state] of states.entries()) {
     await expect.poll(async () => (await audioState(page)).src).toContain(state.clip);
     await expect.poll(async () => (await audioState(page)).duration).toBeGreaterThan(0);
+    await expect.poll(async () => (await audioState(page)).time).toBeGreaterThan(0.05);
     // Advance real media to its last 80ms; do not synthesize an ended event.
     await page.locator('audio').evaluate(a => { a.currentTime = a.duration - .08; });
     if (index < states.length - 1)

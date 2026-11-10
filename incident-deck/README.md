@@ -45,11 +45,22 @@ pnpm test
 pnpm typecheck
 pnpm build                  # slidev build --base /elevenlabs-hackathon/
 pnpm exec playwright install chromium
-pnpm exec playwright test   # static-build media, navigation and layout checks
+pnpm test:browser   # static-build media, navigation and layout checks
 ```
 
-The workflow in `../.github/workflows/incident-pages.yml` builds this directory and publishes `dist/` through GitHub Pages. It runs only for changes to the deck or its workflow, and can also be dispatched manually. Pages must use **GitHub Actions** as its source. The intended URL is https://sunjc826.github.io/elevenlabs-hackathon/ . The Cloudflare Last Train Worker is not part of this deployment.
+The workflow in `../.github/workflows/incident-pages.yml` builds this directory and publishes `dist/` through GitHub Pages. It runs for changes to the deck or its workflow, and can also be dispatched manually. It additionally republishes after the repository’s legacy “pages build and deployment” workflow completes, preventing the branch publisher from leaving source files in place of the built deck. **GitHub Actions** is the preferred Pages source; selecting it removes that redundant legacy build. The intended URL is https://sunjc826.github.io/elevenlabs-hackathon/ . The Cloudflare Last Train Worker is not part of this deployment.
 
 `results.md` records duration, latency, response credit headers and the limitations of the listening comparison. Headless Chromium checks playback behavior and mobile controls; a physical-phone listening review remains a separate check. Portrait phones display a scaled 16:9 slide; rotate to landscape to inspect evidence text.
 
 Implementation references: [Slidev global context](https://sli.dev/guide/global-context), [click animations](https://sli.dev/guide/animations), [static hosting](https://sli.dev/guide/hosting), [ElevenLabs text-to-speech API](https://elevenlabs.io/docs/api-reference/text-to-speech/convert).
+
+## Optional video export
+
+```sh
+.venv/bin/pip install -r requirements-export.txt
+pnpm exec playwright install chromium
+pnpm export:png
+.venv/bin/python export_video.py
+```
+
+This uses Slidev’s `--with-clicks` PNG export and the same manifest clip order to produce `exports/incident-review.mp4` plus `exports/click-states.zip`. FFmpeg encodes H.264/AAC at 1920×1080 and 30 fps. Each segment pads only to the next video frame, so audio is never shortened to fit a slide. Generated export files stay out of Git. The live player controls are suppressed in print/export views.

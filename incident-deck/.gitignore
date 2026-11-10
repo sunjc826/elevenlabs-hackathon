@@ -5,3 +5,4 @@ node_modules/
 dist/
 .qa/
 .cache-build.log
+exports/

@@ -50,3 +50,13 @@ Characters count the exact `say` string sent to the provider. Duration comes fro
 - Subjective listening evaluation and physical-phone playback are not claimed. The native browser was unavailable because the Mac was locked; automated Chromium tests used an isolated headless process.
 
 For another provider, preserve `manifest.yaml`, send the same `say` strings, keep the same per-step file mapping, and record a new metrics file with provider/model/settings, duration, latency and billed units. Do not substitute a cached replay for a second synthesis run.
+
+## Optional export
+
+`slidev export --format png --with-clicks` produced all 21 click-state PNGs. The exported views hide the interactive player overlay. `export_video.py` combined them with the published narration into `exports/incident-review.mp4` and packaged the PNGs in `exports/click-states.zip`.
+
+The MP4 is 1920×1080, H.264/AAC, 30 fps, 226.19 seconds and approximately 6.33 MB. Full audio/video decoding completed with no errors. Its small difference from the MP3-duration sum comes from padding each segment to a video frame and container timing. The export script and dependency instructions are committed; generated media remains outside Git.
+
+## Hosting note
+
+The repository also had a legacy branch-based Pages publisher. A direct attempt to change its source through the deployment token returned HTTP 403. The deck workflow therefore also runs after the legacy “pages build and deployment” workflow completes. Selecting **GitHub Actions** as the Pages source is still preferable because it avoids the redundant branch build.
