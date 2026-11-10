@@ -48,7 +48,7 @@ pnpm exec playwright install chromium
 pnpm test:browser   # static-build media, navigation and layout checks
 ```
 
-The workflow in `../.github/workflows/incident-pages.yml` builds this directory and publishes `dist/` through GitHub Pages. It runs for changes to the deck or its workflow, and can also be dispatched manually. It additionally republishes after the repository’s legacy “pages build and deployment” workflow completes, preventing the branch publisher from leaving source files in place of the built deck. **GitHub Actions** is the preferred Pages source; selecting it removes that redundant legacy build. The intended URL is https://sunjc826.github.io/elevenlabs-hackathon/ . The Cloudflare Last Train Worker is not part of this deployment.
+The workflow in `../.github/workflows/incident-pages.yml` builds this directory and publishes `dist/` through GitHub Pages. It runs on pushes to main and can also be dispatched manually. Before publishing, it waits for any legacy branch publisher for the same commit to finish, preventing that publisher from overwriting the built deck. **GitHub Actions** is the preferred Pages source; selecting it removes that redundant legacy build. The intended URL is https://sunjc826.github.io/elevenlabs-hackathon/ . The Cloudflare Last Train Worker is not part of this deployment.
 
 `results.md` records duration, latency, response credit headers and the limitations of the listening comparison. Headless Chromium checks playback behavior and mobile controls; a physical-phone listening review remains a separate check. Portrait phones display a scaled 16:9 slide; rotate to landscape to inspect evidence text.
 
